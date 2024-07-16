@@ -92,6 +92,7 @@ const getCollege = async (req, res) => {
     }
 }
 
+
 export {
     registerCollege,
     updateCollege,

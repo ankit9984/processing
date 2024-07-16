@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const collegeStreamSchema = new mongoose.Schema({
     streamName: {
         type: String,
+        enum: ['Arts', 'Commerce', 'Science', 'HSVC'],
         required: true
     },
     streamCode: {
@@ -11,11 +12,12 @@ const collegeStreamSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Self Finance', 'Un-Aided', 'Aided'],
+        enum: ['Self Finance', 'Un-Aided', 'Aided', 'B.M.C'],
         required: true
     },
     medium: {
         type: String,
+        enum: ['English', 'Hindi', 'Gujarati', 'Kannad', 'Marathi', 'Sindhi', 'Urdu'],
         required: true
     },
     intake: {
@@ -35,6 +37,10 @@ const collegeStreamSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'CollegeFee'
     },
+    optionalSubject: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'OptionalSubject'
+    }],
     college: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'College'
