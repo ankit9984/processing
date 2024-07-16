@@ -4,6 +4,7 @@ import adminRoute from './routes/adminRoutes.js';
 import collegeRoute from './routes/college.routes.js';
 import connectDB from './config/db.js';
 import cookieParser from 'cookie-parser';
+import searchRoute from './routes/search.routes.js';
 
 const app = express();
 
@@ -13,6 +14,7 @@ connectDB();
 
 app.use('/api', adminRoute);
 app.use('/api/colleges', collegeRoute)
+app.use('/api/search', searchRoute)
 
 app.listen(config.port, () => {
     console.log(`server is running on ${config.port}`);

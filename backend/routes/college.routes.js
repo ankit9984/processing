@@ -4,7 +4,7 @@ import authenticate from '../middlewares/authMiddleware.js';
 import { getCollegeAddress, registerCollegeAddress, updateCollegeAddress } from '../controllers/collegeAddress.controller.js';
 import { getStream, registerStream, updateStream } from '../controllers/collegeStream.controller.js';
 import { addFee, getFee, updateFee } from '../controllers/collegeFee.controller.js';
-import { addSubject, getSubject, updateSubject } from '../controllers/collegeOptionalSubject.controller.js';
+import { addSubject, get, getSubject, updateSubject } from '../controllers/collegeOptionalSubject.controller.js';
 
 const router = express.Router();
 
@@ -30,5 +30,6 @@ router.get('/getfee/:feeId', getFee);
 router.post('/addsubject/:streamId', addSubject);
 router.put('/updatesubject/:subjectId', updateSubject);
 router.get('/getsubject/:subjectId', getSubject)
+router.get('/get', get);
 
 export default router;

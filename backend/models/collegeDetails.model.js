@@ -48,6 +48,8 @@ const collegeDetailsSchema = new mongoose.Schema({
     }]
 }, {timestamps: true});
 
+collegeDetailsSchema.index({ jrCollegeName: 'text', popularName: 'text'});
+
 const College = mongoose.model('College', collegeDetailsSchema);
 
 export default College;

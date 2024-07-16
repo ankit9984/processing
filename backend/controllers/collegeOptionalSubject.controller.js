@@ -1,3 +1,4 @@
+import College from "../models/collegeDetails.model.js";
 import OptionalSubject from "../models/collegeOptionalSubject.model.js";
 import CollegeStream from "../models/collegeStream.model.js";
 
@@ -70,10 +71,28 @@ const getSubject = async (req, res) => {
     }
 }
 
+const get = async (req, res) => {
+    const {collegeId} = req.params;
 
+    const college = await College.findById(collegeId)
+    .populate({
+        path: 'address',
+        select: 'city zone pinCode'
+    })
+    .populate({
+        path: 'streams',
+        select: 'streamName medium'
+    })
+    if(!college){
+        return res.status(400).json({error: 'College not found'})
+    };
+
+    res.status(200).json({message: 'College retrieve successfully', college})
+}
 
 export {
     addSubject,
     updateSubject,
     getSubject,
+    get
 }
