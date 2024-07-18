@@ -1,42 +1,83 @@
 import College from "../models/collegeDetails.model.js";
-import CollegeStream from "../models/collegeStream.model.js";
-import CollegeAddress from "../models/colllegeAddress.model.js";
 
 const filterColleges = async (req, res) => {
     try {
-        const {zone, area, status, collegeType, streamName} = req.query;
-        console.log(zone, area,status,collegeType,streamName);
+        const { zone, area, status, collegeType, streamName } = req.query;
 
-        const collegeFilter = {};
-        const addressFilter = {};
-        const streamFilter = {};
+        const pipeline = [
+            // Lookup CollegeAddress
+            {
+                $lookup: {
+                    from: 'collegeaddresses',
+                    localField: 'address',
+                    foreignField: '_id',
+                    as: 'addressDetails'
+                }
+            },
+            { $unwind: '$addressDetails' },
 
-        if(zone) addressFilter.zone = zone;
-        if(area) addressFilter.area = area;
-        if(status) streamFilter.status = status;
-        if(streamName) streamFilter.streamName = streamName;
-        if(collegeType) collegeFilter.collegeType = collegeType;
+            // Lookup CollegeStream
+            {
+                $lookup: {
+                    from: 'collegestreams',
+                    localField: 'streams',
+                    foreignField: '_id',
+                    as: 'streamDetails'
+                }
+            },
 
-        console.log(collegeFilter, addressFilter, streamFilter);
+            // Match stage for filtering
+            {
+                $match: {
+                    $and: [
+                        zone ? { 'addressDetails.zone': zone } : {},
+                        area ? { 'addressDetails.area': area } : {},
+                        collegeType ? { 'collegeType': collegeType } : {},
+                        status || streamName ? {
+                            'streamDetails': {
+                                $elemMatch: {
+                                    ...(status && { status }),
+                                    ...(streamName && { streamName })
+                                }
+                            }
+                        } : {}
+                    ]
+                }
+            },
 
-        let query = College.find(collegeFilter);
-        // console.log(query);
+            // Project stage to shape the output
+            {
+                $project: {
+                    _id: 1,
+                    udiseNumber: 1,
+                    jrCollegeName: 1,
+                    popularName: 1,
+                    collegeType: 1,
+                    address: {
+                        zone: '$addressDetails.zone',
+                        area: '$addressDetails.area',
+                        city: '$addressDetails.city',
+                        pinCode: '$addressDetails.pinCode'
+                    },
+                    streams: {
+                        $filter: {
+                            input: '$streamDetails',
+                            as: 'stream',
+                            cond: {
+                                $and: [
+                                    status ? { $eq: ['$$stream.status', status] } : {},
+                                    streamName ? { $eq: ['$$stream.streamName', streamName] } : {}
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        ];
 
-        if(Object.keys(addressFilter).length > 0){
-            const addressIds = await CollegeAddress.find(addressFilter).distinct('_id');
-            console.log(addressIds);
-            query = query.where('address').in(addressIds);
-        };
+        const colleges = await College.aggregate(pipeline);
 
-        if(Object.keys(streamFilter).length > 0){
-            const streamIds = await CollegeStream.find(streamFilter).distinct('_id');
-            console.log('stream', streamIds);
-            query = query.where('streams').in(streamIds);
-        }
-        const colleges = await query;
-        console.log(colleges);
-
-        res.status(200).json({colleges})
+        res.status(200).json({count: colleges.length, colleges});
     } catch (error) {
         console.error('filterColleges controller', error);
         res.status(500).json({ message: 'Server error' });
@@ -45,4 +86,4 @@ const filterColleges = async (req, res) => {
 
 export {
     filterColleges
-}
+};

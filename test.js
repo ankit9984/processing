@@ -1,72 +1,88 @@
 import College from "../models/collegeDetails.model.js";
-import redis from 'redis';
-import util from 'util';
-
-// Initialize Redis client
-const redisClient = redis.createClient(process.env.REDIS_URL);
-const getAsync = util.promisify(redisClient.get).bind(redisClient);
-const setexAsync = util.promisify(redisClient.setex).bind(redisClient);
 
 const filterColleges = async (req, res) => {
     try {
-        const { zone, area, status, collegeType, streamName, page = 1, limit = 10 } = req.query;
-        
-        // Create a cache key based on the query parameters
-        const cacheKey = `colleges:${JSON.stringify(req.query)}`;
-        
-        // Try to get the result from cache
-        const cachedResult = await getAsync(cacheKey);
-        if (cachedResult) {
-            return res.status(200).json(JSON.parse(cachedResult));
-        }
+        const { zone, area, status, collegeType, streamName } = req.query;
 
-        // If not in cache, perform the database query
-        const filter = {};
-        if (zone) filter['address.zone'] = new RegExp(zone, 'i');
-        if (area) filter['address.area'] = new RegExp(area, 'i');
-        if (status) filter['streams.status'] = status;
-        if (collegeType) filter.collegeType = collegeType;
-        if (streamName) filter['streams.streamName'] = new RegExp(streamName, 'i');
+        const pipeline = [
+            // Lookup CollegeAddress
+            {
+                $lookup: {
+                    from: 'collegeaddresses',
+                    localField: 'address',
+                    foreignField: '_id',
+                    as: 'addressDetails'
+                }
+            },
+            { $unwind: '$addressDetails' },
 
-        // Use a compound index for efficient querying
-        const colleges = await College.aggregate([
-            { $match: filter },
-            { $skip: (page - 1) * limit },
-            { $limit: parseInt(limit) },
+            // Lookup CollegeStream
+            {
+                $lookup: {
+                    from: 'collegestreams',
+                    localField: 'streams',
+                    foreignField: '_id',
+                    as: 'streamDetails'
+                }
+            },
+
+            // Match stage for filtering
+            {
+                $match: {
+                    $and: [
+                        zone ? { 'addressDetails.zone': zone } : {},
+                        area ? { 'addressDetails.area': area } : {},
+                        collegeType ? { 'collegeType': collegeType } : {},
+                        status || streamName ? {
+                            'streamDetails': {
+                                $elemMatch: {
+                                    ...(status && { status }),
+                                    ...(streamName && { streamName })
+                                }
+                            }
+                        } : {}
+                    ]
+                }
+            },
+
+            // Project stage to shape the output
             {
                 $project: {
-                    jrCollegeName: 1,
+                    _id: 1,
                     udiseNumber: 1,
+                    jrCollegeName: 1,
+                    popularName: 1,
                     collegeType: 1,
-                    address: 1,
+                    address: {
+                        zone: '$addressDetails.zone',
+                        area: '$addressDetails.area',
+                        city: '$addressDetails.city'
+                    },
                     streams: {
                         $filter: {
-                            input: '$streams',
+                            input: '$streamDetails',
                             as: 'stream',
-                            cond: { $eq: ['$$stream.status', status] }
+                            cond: {
+                                $and: [
+                                    status ? { $eq: ['$$stream.status', status] } : {},
+                                    streamName ? { $eq: ['$$stream.streamName', streamName] } : {}
+                                ]
+                            }
                         }
                     }
                 }
             }
-        ]).hint({ 'address.zone': 1, 'address.area': 1, 'streams.status': 1, collegeType: 1, 'streams.streamName': 1 });
+        ];
 
-        const total = await College.countDocuments(filter);
+        const colleges = await College.aggregate(pipeline);
 
-        const result = {
-            colleges,
-            currentPage: parseInt(page),
-            totalPages: Math.ceil(total / limit),
-            totalColleges: total
-        };
-
-        // Cache the result for 5 minutes
-        await setexAsync(cacheKey, 300, JSON.stringify(result));
-
-        res.status(200).json(result);
+        res.status(200).json({count: colleges.length, colleges});
     } catch (error) {
-        console.error('filterColleges controller error:', error);
-        res.status(500).json({ message: 'An error occurred while filtering colleges.' });
+        console.error('filterColleges controller', error);
+        res.status(500).json({ message: 'Server error' });
     }
 };
 
-export { filterColleges };
+export {
+    filterColleges
+};

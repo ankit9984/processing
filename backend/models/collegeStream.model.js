@@ -12,7 +12,7 @@ const collegeStreamSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Self Finance', 'Un-Aided', 'Aided', 'B.M.C'],
+        enum: ['Self-Finance', 'Un-Aided', 'Aided', 'B.M.C'],
         required: true
     },
     medium: {
