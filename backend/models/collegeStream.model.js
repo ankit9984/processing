@@ -44,8 +44,39 @@ const collegeStreamSchema = new mongoose.Schema({
     college: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'College'
-    }
+    },
+    reservationSeats: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ReservationDetails'
+    }]
 }, {timestamps: true});
+
+
+
+collegeStreamSchema.pre('save', async function(next){
+    if(this.isModified('reservationSeats') || this.isModified('intake')){
+        const ReservationDetails = mongoose.model('ReservationDetails');
+        const reservations = await ReservationDetails.find({
+            '_id': {$in: this.reservationSeats}
+        });
+
+        const totalOriginalSeats = reservations.reduce((sum, reservation) => sum + reservation.originalseats, 0);
+
+
+
+        // let totalOriginalSeats = 0;
+        // for(let i = 0; i < reservations.length; i++){
+        //     totalOriginalSeats += reservations[i].originalseats;
+        //     console.log(reservations[i]);
+        // }
+        // console.log( 'seats' ,totalOriginalSeats);
+
+        if(totalOriginalSeats > this.intake){
+            return next(new Error ('Total original seats in reservation cannot exceed in the intake, (CollegeStream Model)'))
+        }
+    };
+    next()
+})
 
 const CollegeStream = mongoose.model('CollegeStream', collegeStreamSchema);
 
