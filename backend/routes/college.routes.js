@@ -5,6 +5,7 @@ import { getCollegeAddress, registerCollegeAddress, updateCollegeAddress } from 
 import { getStream, registerStream, updateStream } from '../controllers/collegeStream.controller.js';
 import { addFee, getFee, updateFee } from '../controllers/collegeFee.controller.js';
 import { addSubject, get, getSubject, updateSubject } from '../controllers/collegeOptionalSubject.controller.js';
+import { registerCutOff } from '../controllers/collegeCutOff.controller.js';
 
 const router = express.Router();
 
@@ -31,5 +32,7 @@ router.post('/addsubject/:streamId', addSubject);
 router.put('/updatesubject/:subjectId', updateSubject);
 router.get('/getsubject/:subjectId', getSubject)
 router.get('/get', get);
+
+router.post('/addcutoff/:streamId', registerCutOff);
 
 export default router;

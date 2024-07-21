@@ -48,7 +48,12 @@ const collegeStreamSchema = new mongoose.Schema({
     reservationSeats: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'ReservationDetails'
-    }]
+    }],
+    cutOff: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'CutOff',
+        
+    }],
 }, {timestamps: true});
 
 

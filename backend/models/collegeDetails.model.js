@@ -40,7 +40,8 @@ const collegeDetailsSchema = new mongoose.Schema({
     },
     address: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'CollegeAddress'
+        ref: 'CollegeAddress',
+        default: null
     },
     streams: [{
         type: mongoose.Schema.Types.ObjectId,
