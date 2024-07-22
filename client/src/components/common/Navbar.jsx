@@ -31,7 +31,7 @@ function Navbar() {
     ]
 
     return (
-        <div className='relative flex justify-between items-center px-5 bg-blue-500 w-full h-14'>
+        <div className='relative flex justify-between items-center px-5 bg-blue-500 w-full h-14 z-1000'>
             <div className='w-14'>
                 <img src={logo} alt="" />
             </div>
