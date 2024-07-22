@@ -7,7 +7,7 @@ const registerAdmin = async (req, res) => {
         const {username, email, password} = req.body;
 
         if(!username || !email || !password){
-            return res.status(404).json({message: 'All field are required'})
+            return res.status(404).json({error: 'All field are required'})
         }
 
         const existingAdmin = await Admin.findOne({
@@ -47,7 +47,7 @@ const registerAdmin = async (req, res) => {
 const loginAdmin = async (req, res) => {
     try {
         const {username, password} = req.body;
-
+        console.log(username, password);
         const existAdmin = await Admin.findOne({username});
         if(!existAdmin){
             return res.status(404).json({error: 'Invalid email or password'})
@@ -61,7 +61,7 @@ const loginAdmin = async (req, res) => {
         const token = generateToken(existAdmin._id);
         setJwtCookie(res, token);
 
-        res.status(200).json({message: 'Logged in successfully', admin: existAdmin});
+        res.status(200).json({message: 'Logged in successfully', admin: existAdmin, token});
     } catch (error) {
         console.error('loginAdmin controller', error);
         res.status(500).json({message: 'Server error'})

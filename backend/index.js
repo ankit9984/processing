@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors'
 import config from './config/config.js'
 import adminRoute from './routes/adminRoutes.js';
 import collegeRoute from './routes/college.routes.js';
@@ -8,6 +9,10 @@ import searchRoute from './routes/search.routes.js';
 import seatsRoutes from './routes/seatsDistribution.routes.js';
 
 const app = express();
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+}))
 
 app.use(express.json());
 app.use(cookieParser());
