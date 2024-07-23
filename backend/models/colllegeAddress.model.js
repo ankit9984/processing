@@ -23,6 +23,7 @@ const collegeAddressSchema = new mongoose.Schema({
     },
     region:{
         type: String,
+        enum: ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Amravati'],
         required: true
     },
     pinCode: {
