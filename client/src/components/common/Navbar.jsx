@@ -1,68 +1,47 @@
-import React, { useEffect, useState, useRef } from 'react'
-import logo from '../../assets/images/logo.png'
-import { IoIosClose, IoIosMenu } from "react-icons/io";
+import React, { useState } from 'react';
+import { CiMenuBurger, CiSearch } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 
 function Navbar() {
-    const [isOpen, setIsOpen] = useState(false);
-    const menuRef = useRef(null);
-    // console.log('UseRef', menuRef.current);
-    const toggleMenu = () => {
-        setIsOpen(!isOpen);
+    const [isActive, setIsActive] = useState(false);
+
+    const handleActive = () => {
+        setIsActive(!isActive);
     }
 
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            // console.log(menuRef.current);
-            if(menuRef.current && !menuRef.current.contains(event.target)){
-                setIsOpen(false)
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        }
-    },[]);
-
-    const navItems = [
-        { title: 'Explore Colleges', path: '/explore' },
-        { title: 'Admission Cutoffs', path: '/cutoffs' },
-        { title: 'Predict Chances', path: '/predict' }
-    ]
-
     return (
-        <div className='relative flex justify-between items-center px-5 bg-blue-500 w-full h-14 z-1000'>
-            <div className='w-14'>
-                <img src={logo} alt="" />
+        <div className='relative flex justify-between p-5 shadow-lg h-14 items-center'>
+            <div>
+                <img src="" alt="Jr College" />
             </div>
-            <div className='hidden sm:flex gap-5 text-white'>
-                {/* <p className='cursor-pointer'>Explore Colleges</p>
-                <p className='cursor-pointer'>Admission CutOffs</p>
-                <p className='cursor-pointer'>Predict Chances</p> */}
-                {navItems.map((item) => (
-                    <p className='cursor-pointer'>{item.title}</p>
-                ))}
-            </div>
-            <div className='sm:hidden' ref={menuRef}>
-                <div className=''>
-                    <span  onClick={toggleMenu}>{isOpen ? <IoIosClose size={25}/> : <IoIosMenu size={25}/>}</span>
+            <div className=' flex justify-between items-center gap-5 '>
+                <div c>
+                    <CiSearch size={30} />
                 </div>
-                {/* {isOpen && ( */}
-                <div className={`fixed top-14 right-0 w-1/2 h-screen transform transition-transform duration-300 ease-in-out bg-white shadow-lg p-5 ${isOpen ? 'translate-x-0' : 'translate-x-full'} ${isOpen && 'w-[75%] sm:w-[50%]'}`}>
-                    <div className='flex flex-col gap-2'>
-                        {/* <p className='cursor-pointer'>Explore Colleges</p>
-                        <p className='cursor-pointer'>Admission CutOffs</p>
-                        <p className='cursor-pointer'>Predict Chances</p> */}
+                <div>
+                    {isActive ? <IoMdClose onClick={() => handleActive()} size={30} /> : <CiMenuBurger onClick={() => handleActive()} size={25} />}
+                </div>
 
-                        {navItems.map((items) => (
-                            <p className='cursor-pointer'>{items.title}</p>
-                        ))}
+                <div className={` absolute flex flex-col gap-2  py-4 top-14 right-0 shadow-lg  h-screen w-3/4 sm:w-1/2 transform transition-transform duration-500 bg-white ${isActive ? 'translate-x-0' : 'translate-x-full'}`}>
+                    <div className='py-4 pl-2 border border-l-0 border-r-0 border-black'>
+                        <p>Explore Colleges</p>
+                    </div>
+                    <div className='py-4 pl-2 border border-l-0 border-r-0  border-black'>
+                        <p>Explore Colleges</p>
+                    </div>
+                    <div className='py-4 pl-2 border border-l-0 border-r-0  border-black'>
+                        <p>Explore Colleges</p>
+                    </div>
+                    <div className='py-4 pl-2 border border-l-0 border-r-0  border-black'>
+                        <p>Explore Colleges</p>
+                    </div>
+                    <div className='py-4 pl-2 border border-l-0 border-r-0  border-black'>
+                        <p>Explore Colleges</p>
                     </div>
                 </div>
-                {/* )} */}
             </div>
         </div>
-    )
+    );
 }
 
-export default Navbar
+export default Navbar;

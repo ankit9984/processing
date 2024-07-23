@@ -1,44 +1,62 @@
-import College from '../models/collegeDetails.model.js'
+import College from "../models/collegeDetails.model.js";
 
 const searchCollege = async (req, res) => {
     try {
-        const { query } = req.query;
-        if (!query) {
-            return res.status(400).json({ message: 'Search query is required' });
-        }
+        const {query} = req.query;
 
-        // Split the query into words and ensure non-empty words
-        const queryWords = query.split(/\s+/).filter(word => word.length > 0);
+        if(!query){
+            return res.status(400).json({error: 'Search query is required'})
+        };
 
-        // Check if each word matches any document
-        for (let word of queryWords) {
-            const result = await College.findOne({ 
-                $or: [
-                    { jrCollegeName: { $regex: word, $options: 'i' } },
-                    { popularName: { $regex: word, $options: 'i' } }
-                ]
-            });
-
-            if (!result) {
-                // If any word does not match, return an empty array
-                return res.status(200).json({ 
-                    message: 'No matches found. Please check your search query.',
-                    colleges: [] 
-                });
+        const colleges = await College.aggregate([
+            {
+                $match: {
+                    $text: {$search: query}
+                }
+            },
+            {
+                $lookup: {
+                    from: 'collegeaddresses',
+                    localField: 'address',
+                    foreignField: '_id',
+                    as: 'address'
+                }
+            },
+            {
+                $unwind: '$address'
+            },
+            {
+                $project: {
+                    jrCollegeName: 1,
+                    popularName: 1,
+                    'address.area': 1,
+                    'address.pinCode': 1,
+                    score: {$meta: 'textScore'}
+                }
+            },
+            {
+                $sort: {
+                    score: {$meta: 'textScore'}
+                }
+            },
+            {
+                $limit: 10
             }
-        }
+        ])
 
-        // If all words match, perform the search using $text operator
-        const colleges = await College.find(
-            { $text: { $search: query } },
-            { score: { $meta: 'textScore' } }
-        ).sort({ score: { $meta: 'textScore' } });
+        console.log(colleges);
 
-        res.status(200).json({ colleges });
+        if(colleges.length === 0){
+            return res.status(404).json({message: 'No colleges found matching the search query'})
+        };
+        
+        res.status(200).json({message: 'Colleges found', colleges})
     } catch (error) {
-        console.error('searchCollege controller error:', error);
+        console.error('searchCollege controller', error);
         res.status(500).json({ message: 'Server error' });
     }
 };
 
-export { searchCollege };
+export {
+    searchCollege
+}

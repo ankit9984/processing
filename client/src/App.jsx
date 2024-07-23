@@ -1,14 +1,15 @@
 import React from 'react'
 import Navbar from './components/common/Navbar'
-import SearchComponent from './components/HomeCompents/SearchComponent'
-import CitySelector from './components/HomeCompents/CityComponents'
+import { Routes, Route } from 'react-router-dom'
+import HomePage from './pages/Homepage/HomePage'
 
 function App() {
   return (
     <div>
-      <Navbar/>
-      <SearchComponent/>
-      <CitySelector/>
+      <Navbar />
+      <Routes>
+        <Route path='/' element={<HomePage />} />
+      </Routes>
     </div>
   )
 }

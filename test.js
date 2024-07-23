@@ -1,36 +1,67 @@
-import React, { useState } from 'react';
-import { FaLandmark, FaBuilding, FaArchway, FaCity } from 'react-icons/fa';
+import College from "../models/collegeDetails.model.js";
+import CollegeAddress from "../models/collegeAddress.model.js";
 
-const CitySelector = () => {
-  const [selectedCity, setSelectedCity] = useState('New Delhi');
+const searchCollege = async (req, res) => {
+    try {
+        const { query } = req.query;
 
-  const cities = [
-    { name: 'New Delhi', icon: <FaLandmark /> },
-    { name: 'Gurgaon', icon: <FaBuilding /> },
-    { name: 'Noida', icon: <FaArchway /> },
-    { name: 'Mumbai', icon: <FaCity /> },
-  ];
+        if (!query) {
+            return res.status(400).json({ message: 'Search query is required' });
+        }
 
-  return (
-    <div className="flex space-x-4 p-4">
-      {cities.map((city) => (
-        <div
-          key={city.name}
-          className={`flex flex-col items-center p-4 cursor-pointer border rounded-md ${
-            selectedCity === city.name ? 'bg-blue-100 border-blue-400' : 'border-gray-300'
-          }`}
-          onClick={() => setSelectedCity(city.name)}
-        >
-          <div className={`text-2xl ${selectedCity === city.name ? 'text-blue-500' : 'text-gray-500'}`}>
-            {city.icon}
-          </div>
-          <div className={`mt-2 ${selectedCity === city.name ? 'text-blue-500' : 'text-gray-700'}`}>
-            {city.name}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+        const colleges = await College.aggregate([
+            {
+                $match: {
+                    $text: { $search: query }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'collegeaddresses',
+                    localField: 'address',
+                    foreignField: '_id',
+                    as: 'address'
+                }
+            },
+            {
+                $unwind: '$address'
+            },
+            {
+                $project: {
+                    jrCollegeName: 1,
+                    popularName: 1,
+                    societyManagement: 1,
+                    typeOfManagement: 1,
+                    yearOfFoundation: 1,
+                    attachedTo: 1,
+                    collegeType: 1,
+                    'address.area': 1,
+                    'address.pincode': 1,
+                    score: { $meta: 'textScore' }
+                }
+            },
+            {
+                $sort: {
+                    score: { $meta: 'textScore' }
+                }
+            },
+            {
+                $limit: 10
+            }
+        ]);
+
+        if (colleges.length === 0) {
+            return res.status(404).json({ message: 'No colleges found matching the search query' });
+        }
+
+        res.status(200).json({ message: 'Colleges found', colleges });
+    } catch (error) {
+        console.error('searchCollege controller', error);
+        res.status(500).json({ message: 'Server error' });
+    }
 };
 
-export default CitySelector;
+export {
+    searchCollege,
+    // ... other exports ...
+};
