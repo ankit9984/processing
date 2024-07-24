@@ -14,28 +14,28 @@ function Navbar() {
             <div>
                 <img src="" alt="Jr College" />
             </div>
-            <div className=' flex justify-between items-center gap-5 '>
-                <div c>
+            <div className='flex justify-between items-center gap-5'>
+                <div>
                     <CiSearch size={30} />
                 </div>
                 <div>
-                    {isActive ? <IoMdClose onClick={() => handleActive()} size={30} /> : <CiMenuBurger onClick={() => handleActive()} size={25} />}
+                    {isActive ? <IoMdClose onClick={handleActive} size={30} /> : <CiMenuBurger onClick={handleActive} size={25} />}
                 </div>
 
-                <div className={` absolute flex flex-col gap-2  py-4 top-14 right-0 shadow-lg  h-screen w-3/4 sm:w-1/2 transform transition-transform duration-500 bg-white ${isActive ? 'translate-x-0' : 'translate-x-full'}`}>
+                <div className={`absolute flex flex-col gap-2 py-4 top-14 right-0 shadow-lg h-screen w-3/4 sm:w-1/2 transform transition-transform duration-500 bg-white ${isActive ? 'translate-x-0' : 'translate-x-full'}`}>
                     <div className='py-4 pl-2 border border-l-0 border-r-0 border-black'>
                         <p>Explore Colleges</p>
                     </div>
-                    <div className='py-4 pl-2 border border-l-0 border-r-0  border-black'>
+                    <div className='py-4 pl-2 border border-l-0 border-r-0 border-black'>
                         <p>Explore Colleges</p>
                     </div>
-                    <div className='py-4 pl-2 border border-l-0 border-r-0  border-black'>
+                    <div className='py-4 pl-2 border border-l-0 border-r-0 border-black'>
                         <p>Explore Colleges</p>
                     </div>
-                    <div className='py-4 pl-2 border border-l-0 border-r-0  border-black'>
+                    <div className='py-4 pl-2 border border-l-0 border-r-0 border-black'>
                         <p>Explore Colleges</p>
                     </div>
-                    <div className='py-4 pl-2 border border-l-0 border-r-0  border-black'>
+                    <div className='py-4 pl-2 border border-l-0 border-r-0 border-black'>
                         <p>Explore Colleges</p>
                     </div>
                 </div>

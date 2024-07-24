@@ -8,6 +8,10 @@ const searchCollege = async (req, res) => {
             return res.status(400).json({ error: 'Search query is required' });
         }
 
+        if(query.length < 3){
+            return res.status(400).json({error: 'College must be at least 3 letters'})
+        }
+
         let aggregationPipeline = [
             {
                 $lookup: {
@@ -25,13 +29,23 @@ const searchCollege = async (req, res) => {
             }
         ];
 
+        
+
         // Add text search if query is provided
-        if (query) {
+        // if (query) {
+        //     aggregationPipeline.unshift({
+        //         $match: {
+        //             $text: { $search: query }
+        //         }
+        //     });
+        // }
+
+        if(query){
             aggregationPipeline.unshift({
                 $match: {
-                    $text: { $search: query }
+                    jrCollegeName: {$regex: query, $options: 'i'}
                 }
-            });
+            })
         }
 
         // Add region filter if provided
@@ -52,14 +66,14 @@ const searchCollege = async (req, res) => {
                     'address.area': 1,
                     'address.pinCode': 1,
                     'address.region': 1,
-                    score: { $meta: 'textScore' }
+                    // score: { $meta: 'textScore' }
                 }
             },
-            {
-                $sort: {
-                    score: { $meta: 'textScore' }
-                }
-            },
+            // {
+            //     $sort: {
+            //         score: { $meta: 'textScore' }
+            //     }
+            // },
             {
                 $limit: 10
             }
