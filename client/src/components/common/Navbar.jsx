@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CiMenuBurger, CiSearch } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
+import { Link } from 'react-router-dom';
 
 function Navbar() {
     const [isActive, setIsActive] = useState(false);
@@ -11,9 +12,9 @@ function Navbar() {
 
     return (
         <div className='relative flex justify-between p-5 shadow-lg h-14 items-center'>
-            <div>
+            <Link to='/'>
                 <img src="" alt="Jr College" />
-            </div>
+            </Link>
             <div className='flex justify-between items-center gap-5'>
                 <div>
                     <CiSearch size={30} />

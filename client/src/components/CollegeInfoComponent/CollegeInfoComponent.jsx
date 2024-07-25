@@ -5,7 +5,6 @@ import { fetchCollegeByslug } from '../../store/CollegeInfoSlice';
 
 function CollegeInfo() {
   const { slug } = useParams();
-  console.log(slug);
   const dispatch = useDispatch();
   const { college, loading, error } = useSelector((state) => state.collegeInfo);
 
