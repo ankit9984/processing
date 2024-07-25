@@ -38,6 +38,11 @@ const collegeDetailsSchema = new mongoose.Schema({
         enum: ['Co-Ed', 'Girl', 'Boy'],
         required: true
     },
+    slug: {
+        type: String,
+        unique: true,
+        required: true
+    },
     address: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'CollegeAddress',

@@ -1,5 +1,6 @@
 import Admin from "../models/adminModel.js";
 import College from "../models/collegeDetails.model.js";
+import generateSlug from "../utils/urlGenerate.js";
 
 const registerCollege = async (req, res) => {
     try {
@@ -18,6 +19,14 @@ const registerCollege = async (req, res) => {
             return res.status(400).json({error: 'udiseNumber is already takend'})
        }
 
+       let slug = generateSlug(jrCollegeName);
+       let existingSlug = await College.findOne({slug});
+
+       while(existingSlug){
+            slug = generateSlug(`${jrCollegeName}-${Math.floor(Math.random()*10000)}`);
+            existingSlug = await College.findOne({slug})
+       };
+
         const newCollege = new College({
             udiseNumber,
             jrCollegeName,
@@ -26,7 +35,8 @@ const registerCollege = async (req, res) => {
             typeOfManagement,
             yearOfFoundation,
             attachedTo,
-            collegeType
+            collegeType,
+            slug
         });
 
         await newCollege.save();
@@ -67,6 +77,20 @@ const updateCollege = async (req, res) => {
         college.yearOfFoundation = yearOfFoundation || college.yearOfFoundation;
         college.attachedTo = attachedTo || college.attachedTo;
         college.collegeType = collegeType || college.collegeType;
+
+        if(jrCollegeName && jrCollegeName !== college.jrCollegeName){
+                let newSlug = generateSlug(jrCollegeName);
+                let existingSlug = await College.findOne({slug: newSlug});
+                console.log(newSlug);
+
+            while(existingSlug){
+                newSlug = generateSlug(`${jrCollegeName}-${Math.floor(Math.random() * 10000)}`);
+                existingSlug = await College.findOne({slug: newSlug});
+                console.log(newSlug);
+            };
+
+            college.slug = newSlug;
+        }
 
         await college.save();
         res.status(200).json({message: 'College updated successfully', college})

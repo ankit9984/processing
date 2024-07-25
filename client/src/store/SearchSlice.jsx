@@ -7,9 +7,10 @@ export const searchColleges = createAsyncThunk(
         // console.log(query, region);
         try {
             const response = await axiosInstance.get(`/search/searchcolleges`, {params: {query, region}});
-            console.log(response.data);
+            console.log('slice', response.data);
             return response.data;
         } catch (error) {
+            console.log(error);
             return rejectWithValue(error.response.data)
         }
     }

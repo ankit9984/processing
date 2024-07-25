@@ -5,12 +5,12 @@ const searchCollege = async (req, res) => {
         const { query, region } = req.query;
         console.log(query);
         if (!query) {
-            return res.status(400).json({ error: 'Search query is required' });
+            return res.status(200).json({ message: 'Search query is required', colleges:[] });
         }
 
-        if(query.length < 3){
-            return res.status(400).json({error: 'College must be at least 3 letters'})
-        }
+        // if(query.length < 3){
+        //     return res.status(400).json({error: 'College must be at least 3 letters'})
+        // }
 
         let aggregationPipeline = [
             {
@@ -84,7 +84,7 @@ const searchCollege = async (req, res) => {
         console.log(colleges);
 
         if (colleges.length === 0) {
-            return res.status(404).json({ message: 'No colleges found matching the search criteria' });
+            return res.status(200).json({ message: 'No colleges found matching the search criteria', colleges: [] });
         }
         
         res.status(200).json({ message: 'Colleges found', colleges });
