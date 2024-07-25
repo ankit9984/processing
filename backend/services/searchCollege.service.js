@@ -66,6 +66,7 @@ const searchCollege = async (req, res) => {
                     'address.area': 1,
                     'address.pinCode': 1,
                     'address.region': 1,
+                    'slug': 1
                     // score: { $meta: 'textScore' }
                 }
             },

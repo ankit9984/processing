@@ -1,6 +1,9 @@
 import React from 'react';
+import {useNavigate} from 'react-router-dom'
 
 function SearchResult({ colleges }) {
+  console.log(colleges);
+  const navigate = useNavigate();
   if (colleges.length === 0) {
     return (
       <div className='max-w-3xl mt-4 w-full px-4'>
@@ -9,12 +12,17 @@ function SearchResult({ colleges }) {
     );
   }
 
+  const handleCollegeClick = (slug) => {
+    // alert(slug)
+    navigate(`college/${slug}`)
+  }
+
   return (
     <div className='max-w-3xl w-full px-4'>
       <h2 className='text-white text-xl sm:text-2xl font-semibold mb-4 text-center'>Search Results</h2>
       <ul className='space-y-4'>
         {colleges.map((college) => (
-          <li key={college._id} className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <li key={college._id} onClick={() => handleCollegeClick(college.slug)} className="bg-white rounded-lg shadow-lg overflow-hidden">
             <div className="p-4 sm:p-6 hover:bg-gray-100 transition-colors cursor-pointer">
               <h4 className='text-[15px] sm:text-lg font-bold text-gray-800'>{college.jrCollegeName}</h4>
               <p className='text-sm sm:text-base text-gray-600'>{college.popularName}</p>

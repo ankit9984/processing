@@ -116,9 +116,26 @@ const getCollege = async (req, res) => {
     }
 }
 
+const getCollegeBYSlug = async (req, res) => {
+    try {
+        const {slug} = req.params;
+        console.log(slug);
+        const college = await College.findOne({slug});
+        if(!college){
+            return res.status(250).json({message: "No College Found", college: []})
+        };
+
+        res.status(201).json({message: 'CollegeInfo retrieve successfully', college})
+    } catch (error) {
+        console.error('getCollegeBYSlug controller', error.message);
+        res.status(500).json({message: 'Server error'})
+    }
+}
+
 
 export {
     registerCollege,
     updateCollege,
-    getCollege
+    getCollege,
+    getCollegeBYSlug
 }

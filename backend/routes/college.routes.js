@@ -1,5 +1,5 @@
 import express from 'express';
-import { getCollege, registerCollege, updateCollege } from '../controllers/collegeDetails.controller.js';
+import { getCollege, getCollegeBYSlug, registerCollege, updateCollege } from '../controllers/collegeDetails.controller.js';
 import authenticate from '../middlewares/authMiddleware.js';
 import { getCollegeAddress, registerCollegeAddress, updateCollegeAddress } from '../controllers/collegeAddress.controller.js';
 import { getStream, registerStream, updateStream } from '../controllers/collegeStream.controller.js';
@@ -9,11 +9,12 @@ import { registerCutOff } from '../controllers/collegeCutOff.controller.js';
 
 const router = express.Router();
 
-router.use(authenticate);
 
-router.post('/registercollege', registerCollege);
-router.put('/updatecollege/:collegeId', updateCollege);
+
+router.post('/registercollege',authenticate , registerCollege);
+router.put('/updatecollege/:collegeId', authenticate , updateCollege);
 router.get('/getcollege/:collegeId', getCollege);
+router.get('/getcollege/slug/:slug', getCollegeBYSlug);
 
 
 router.post('/addaddress/:collegeId', registerCollegeAddress);

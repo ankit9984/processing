@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCollegeBySlug } from '../../store/CollegeInfoSlice';
+import { fetchCollegeByslug } from '../../store/CollegeInfoSlice';
 
 function CollegeInfo() {
   const { slug } = useParams();
+  console.log(slug);
   const dispatch = useDispatch();
   const { college, loading, error } = useSelector((state) => state.collegeInfo);
 
   useEffect(() => {
-    dispatch(fetchCollegeBySlug(slug));
+    dispatch(fetchCollegeByslug(slug));
   }, [dispatch, slug]);
 
   if (loading) return <div>Loading...</div>;
