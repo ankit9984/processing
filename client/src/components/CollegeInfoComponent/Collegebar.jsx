@@ -2,10 +2,10 @@ import React, { useEffect } from 'react'
 import { FaInfoCircle, FaGraduationCap, FaMapMarkerAlt, FaChartLine, FaMoneyBillWave, FaImage } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
-import { fetchCollegeByslug } from '../../store/CollegeInfoSlice';
+import { fetchCollegeById, fetchCollegeByslug } from '../../store/CollegeInfoSlice';
 
 function Collegebar({college}) {
-  console.log(college._id);
+  // console.log(college._id);
     // const {slug} = useParams();
     // const distpatch = useDispatch();
     // const {college, loaidng, error} = useSelector((state) => state.collegeInfo);
@@ -14,6 +14,12 @@ function Collegebar({college}) {
     // },[slug])
     // console.log('me', college);
     
+    const dispatch = useDispatch();
+
+    const handleClick = (id) => {
+      dispatch(fetchCollegeById(id))
+    }
+
     const sections = [
         {id: college._id ,icon: FaInfoCircle, label: 'Intro'},
         // {icon: FaGraduationCap, label: 'Courses & Fess'},
@@ -23,11 +29,11 @@ function Collegebar({college}) {
         // {icon: FaImage, lable: 'Photo'}
     ]
   return (
-    <div className='flex flex-wrap justify-center gap-4 p-4 bg-gray-100 shadow-lg'>
+    <div className='flex flex-wrap  gap-4 p-4 bg-gray-100 shadow-lg'>
       {sections.map((section) => (
         <Link key={section.id}>
             {/* <section.icon className='text-2xl mb-1 text-blue-600'/> */}
-            <span className='text-sm font-medium'>{section.label}</span>
+            <span onClick={() => handleClick(section.id)} className='text-sm font-medium'>{section.label}</span>
         </Link>
       ))}
     </div>

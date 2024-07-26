@@ -104,10 +104,19 @@ const getCollege = async (req, res) => {
     try {
         const { collegeId } = req.params;
 
-        const college = await College.findById(collegeId);
+        let college = await College.findById(collegeId);
         if (!college) {
             return res.status(400).json({ error: 'College not found' })
         };
+
+        college = {
+            _id: college._id,
+            udise: college.udiseNumber,
+            collegeName: college.jrCollegeName,
+            managment: college.typeOfManagement,
+            foundationYear: college.yearOfFoundation,
+            type: college.collegeType
+        }
 
         res.status(200).json({ message: 'College found successfully', college })
     } catch (error) {

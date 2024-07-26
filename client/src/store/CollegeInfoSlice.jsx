@@ -7,13 +7,27 @@ export const fetchCollegeByslug = createAsyncThunk(
     async(slug, {rejectWithValue}) => {
         try {
             const response = await axiosInstance.get(`/colleges/getcollege/slug/${slug}`);
-            console.log(response.data);
+            // console.log(response.data);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
         }
     }
 );
+
+export const fetchCollegeById = createAsyncThunk(
+    'collegeInfo/fetchCollegeById',
+    async (id, {rejectWithValue}) => {
+        try {
+            const response = await axiosInstance.get(`/colleges/getcollege/${id}`);
+            console.log(response.data);
+            return response.data
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+        }
+    }
+)
+
 
 const collegeInfoSlice = createSlice({
     name: 'collegeInfo',

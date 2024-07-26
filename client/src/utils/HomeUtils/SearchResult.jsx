@@ -2,7 +2,7 @@ import React from 'react';
 import {useNavigate} from 'react-router-dom'
 
 function SearchResult({ colleges }) {
-  console.log(colleges);
+  // console.log(colleges);
   const navigate = useNavigate();
   if (colleges.length === 0) {
     return (
