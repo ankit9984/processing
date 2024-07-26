@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCollegeByslug } from '../../store/CollegeInfoSlice';
+import { FaLocationPin } from "react-icons/fa6";
+import { FaCalendarAlt } from "react-icons/fa";
 
 function CollegeInfo() {
   const { slug } = useParams();
@@ -17,33 +19,23 @@ function CollegeInfo() {
   if (!college) return <div>No college information found</div>;
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">{college.jrCollegeName}</h1>
-      <h2 className="text-xl text-gray-600 mb-4">{college.popularName}</h2>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <h3 className="font-semibold">UDISE Number:</h3>
-          <p>{college.udiseNumber}</p>
+    <div className='flex flex-col gap2 justify-between p-2 shadow-lg'>
+      <div className='flex justify-between p-5'>
+        <h1 className='text-xl sm:text-5xl'>{college.collegeName}</h1>
+        <img className='w-10' src={`https://test.tcetmumbai.in/Images/TCET%20Logo.png`} alt="" />
+      </div>
+      <div className='flex gap-5 items-center pl-5 text-xl'>
+        <div className='flex items-center gap-3'>
+          <FaLocationPin/>
+          <span className='text-sm'>{college.address?.city}, {college.address.pinCode}</span>
         </div>
-        <div>
-          <h3 className="font-semibold">Society Management:</h3>
-          <p>{college.societyManagement}</p>
+        <div className='flex items-center gap-2'>
+          <FaCalendarAlt />
+          <span className='text-sm'>{college.foundationYear}</span>
         </div>
-        <div>
-          <h3 className="font-semibold">Type of Management:</h3>
-          <p>{college.typeOfManagement}</p>
-        </div>
-        <div>
-          <h3 className="font-semibold">Year of Foundation:</h3>
-          <p>{college.yearOfFoundation}</p>
-        </div>
-        <div>
-          <h3 className="font-semibold">Attached To:</h3>
-          <p>{college.attachedTo}</p>
-        </div>
-        <div>
-          <h3 className="font-semibold">College Type:</h3>
-          <p>{college.collegeType}</p>
+        <div className='flex gap-2 items-center text-orange-600'>
+          <p className='text-sm'>{college.managment}</p>
+          <p className='text-sm'>{college.type}</p>
         </div>
       </div>
     </div>
