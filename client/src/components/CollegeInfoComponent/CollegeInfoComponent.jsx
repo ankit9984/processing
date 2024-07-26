@@ -5,18 +5,18 @@ import { fetchCollegeByslug } from '../../store/CollegeInfoSlice';
 import { FaLocationPin } from "react-icons/fa6";
 import { FaCalendarAlt } from "react-icons/fa";
 
-function CollegeInfo() {
-  const { slug } = useParams();
-  const dispatch = useDispatch();
-  const { college, loading, error } = useSelector((state) => state.collegeInfo);
+function CollegeInfo({college}) {
+  // const { slug } = useParams();
+  // const dispatch = useDispatch();
+  // const { college, loading, error } = useSelector((state) => state.collegeInfo);
 
-  useEffect(() => {
-    dispatch(fetchCollegeByslug(slug));
-  }, [dispatch, slug]);
+  // useEffect(() => {
+  //   dispatch(fetchCollegeByslug(slug));
+  // }, [dispatch, slug]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
-  if (!college) return <div>No college information found</div>;
+  // if (loading) return <div>Loading...</div>;
+  // if (error) return <div>{error}</div>;
+  // if (!college) return <div>No college information found</div>;
 
   return (
     <div className='flex flex-col gap2 justify-between p-2 shadow-lg'>
