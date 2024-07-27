@@ -26,6 +26,19 @@ export const fetchCollegeById = createAsyncThunk(
             return rejectWithValue(error.response.data)
         }
     }
+);
+
+export const fetchStreamInfoByCollegeId = createAsyncThunk(
+    'streamInfo/fetchStreamInfoByCollegeId',
+    async(collegeId, {rejectWithValue}) => {
+        try {
+            const response = await axiosInstance.get(`/colleges/getstreaminfobycollegeid/${collegeId}`);
+            console.log(response.data);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+        }
+    }
 )
 
 

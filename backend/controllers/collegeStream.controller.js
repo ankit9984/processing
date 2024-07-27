@@ -104,8 +104,32 @@ const getStream = async (req, res) => {
     }
 }
 
+const getStreamInfoByCollegeId = async (req, res) => {
+    try {
+        const {collegeId} = req.params;
+        const college = await College.findById(collegeId).populate('streams')
+        if(!college){
+            return res.status(400).json({message: 'College not found'})
+        };
+
+        const streamDetails = college.streams.map(stream => ({
+            streamId: stream._id,
+            streamName: stream.streamName,
+            streamCode: stream.streamCode,
+            streamStatus: stream.status,
+            streamIT: stream.isOfferingIT
+        }))
+
+        res.status(200).json({streamDetails})
+    } catch (error) {
+        console.error('getStreamInfoByCollegeId controller', error);
+        res.status(500).json({message: 'Server error'})
+    }
+}
+
 export {
     registerStream,
     updateStream,
-    getStream
+    getStream,
+    getStreamInfoByCollegeId
 }

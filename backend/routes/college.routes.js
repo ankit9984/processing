@@ -2,7 +2,7 @@ import express from 'express';
 import { getCollege, getCollegeBYSlug, registerCollege, updateCollege } from '../controllers/collegeDetails.controller.js';
 import authenticate from '../middlewares/authMiddleware.js';
 import { getCollegeAddress, registerCollegeAddress, updateCollegeAddress } from '../controllers/collegeAddress.controller.js';
-import { getStream, registerStream, updateStream } from '../controllers/collegeStream.controller.js';
+import { getStream, getStreamInfoByCollegeId, registerStream, updateStream } from '../controllers/collegeStream.controller.js';
 import { addFee, getFee, updateFee } from '../controllers/collegeFee.controller.js';
 import { addSubject, get, getSubject, updateSubject } from '../controllers/collegeOptionalSubject.controller.js';
 import { registerCutOff } from '../controllers/collegeCutOff.controller.js';
@@ -24,6 +24,7 @@ router.get('/getcollegeaddress/:addressId', getCollegeAddress);
 router.post('/addstream/:collegeId', registerStream);
 router.put('/updatestream/:collegeId/:streamId', updateStream);
 router.get('/getstream/:streamId', getStream);
+router.get('/getstreaminfobycollegeid/:collegeId', getStreamInfoByCollegeId);
 
 router.post('/addfee/:streamId', addFee);
 router.put('/updatefee/:feeId', updateFee);

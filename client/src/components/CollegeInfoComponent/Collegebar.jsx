@@ -1,43 +1,56 @@
-import React, { useEffect } from 'react'
+import React from 'react';
 import { FaInfoCircle, FaGraduationCap, FaMapMarkerAlt, FaChartLine, FaMoneyBillWave, FaImage } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useParams } from 'react-router-dom';
-import { fetchCollegeById, fetchCollegeByslug } from '../../store/CollegeInfoSlice';
+import { Link } from 'react-router-dom';
+import { fetchCollegeById, fetchStreamInfoByCollegeId } from '../../store/CollegeInfoSlice';
 
-function Collegebar({college}) {
-  // console.log(college._id);
-    // const {slug} = useParams();
-    // const distpatch = useDispatch();
-    // const {college, loaidng, error} = useSelector((state) => state.collegeInfo);
-    // useEffect(() => {
-    //     distpatch(fetchCollegeByslug(slug));
-    // },[slug])
-    // console.log('me', college);
-    
-    const dispatch = useDispatch();
+function Collegebar() {
+  const dispatch = useDispatch();
+  const { college, loading, error } = useSelector((state) => state.collegeInfo);
 
-    const handleClick = (id) => {
-      dispatch(fetchCollegeById(id))
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+  if (!college) return <div>No college information available.</div>;
+
+  const handleClick = (id, location) => {
+    switch (location) {
+      case 'Intro':
+        dispatch(fetchCollegeById(id));
+        break;
+      case 'Courses':
+        dispatch(fetchStreamInfoByCollegeId(id));
+        break;
+      default:
+        alert('Invalid section location');
     }
+  };
 
-    const sections = [
-        {id: college._id ,icon: FaInfoCircle, label: 'Intro'},
-        // {icon: FaGraduationCap, label: 'Courses & Fess'},
-        // {icon: FaMapMarkerAlt, label: 'Address'},
-        // {icon: FaChartLine, label: 'Cutoff'},
-        // {icon: FaMoneyBillWave, label: 'Fees'},
-        // {icon: FaImage, lable: 'Photo'}
-    ]
+  const sections = [
+    { id: college._id, icon: FaInfoCircle, label: 'Intro', location: 'Intro' },
+    { id: college._id, icon: FaGraduationCap, label: 'Courses & Fees', location: 'Courses' },
+    { id: college._id, icon: FaMapMarkerAlt, label: 'Address', location: 'Address' },
+    { id: college._id, icon: FaChartLine, label: 'Cutoff', location: 'CutOff' },
+    { id: college._id, icon: FaMoneyBillWave, label: 'Fees', location: 'Fees' },
+    { id: college._id, icon: FaImage, label: 'Photo', location: 'Photo' }
+  ];
+
   return (
-    <div className='flex flex-wrap  gap-4 p-4 bg-gray-100 shadow-lg'>
-      {sections.map((section) => (
-        <Link key={section.id}>
-            {/* <section.icon className='text-2xl mb-1 text-blue-600'/> */}
-            <span onClick={() => handleClick(section.id)} className='text-sm font-medium'>{section.label}</span>
-        </Link>
-      ))}
+    <div className="overflow-x-auto">
+      <div className="flex whitespace-nowrap p-4 bg-gray-100 shadow-lg" style={{ minWidth: 'max-content' }}>
+        {sections.map((section) => (
+          <Link key={section.location} className="flex-shrink-0 mx-2">
+            <button
+              onClick={() => handleClick(section.id, section.location)}
+              className="flex items-center text-sm font-medium"
+            >
+              <section.icon className="text-xl mr-2 text-blue-600" />
+              <span>{section.label}</span>
+            </button>
+          </Link>
+        ))}
+      </div>
     </div>
-  )
+  );
 }
 
-export default Collegebar
+export default Collegebar;
