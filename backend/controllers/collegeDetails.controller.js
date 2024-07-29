@@ -115,7 +115,8 @@ const getCollege = async (req, res) => {
             collegeName: college.jrCollegeName,
             managment: college.typeOfManagement,
             foundationYear: college.yearOfFoundation,
-            type: college.collegeType
+            type: college.collegeType,
+            slug: college.slug
         }
 
         res.status(200).json({ message: 'College found successfully', college })

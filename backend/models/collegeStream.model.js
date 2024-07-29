@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+
 const collegeStreamSchema = new mongoose.Schema({
     streamName: {
         type: String,

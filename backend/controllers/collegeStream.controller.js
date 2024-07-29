@@ -107,29 +107,66 @@ const getStream = async (req, res) => {
 const getStreamInfoByCollegeId = async (req, res) => {
     try {
         const {collegeId} = req.params;
-        const college = await College.findById(collegeId).populate('streams')
+        const college = await College.findById(collegeId)
+        .populate({
+            path: 'streams',
+            populate: {
+                path: 'fee',
+                select: 'totalFees'
+            }
+        })
         if(!college){
             return res.status(400).json({message: 'College not found'})
         };
 
-        const streamDetails = college.streams.map(stream => ({
+        const streams = college.streams.map(stream => ({
             streamId: stream._id,
             streamName: stream.streamName,
             streamCode: stream.streamCode,
             streamStatus: stream.status,
-            streamIT: stream.isOfferingIT
-        }))
+            streamIT: stream.isOfferingIT,
+            streamMedium: stream.medium,
+            streamIntake: stream.intake,
+            streamTotalFees: stream.fee ? stream.fee.totalFees: 'N/A'
+        }));
 
-        res.status(200).json({streamDetails})
+        console.log(streams);
+
+        res.status(200).json({message: 'CollegeStream detials get successfully', streams})
     } catch (error) {
         console.error('getStreamInfoByCollegeId controller', error);
         res.status(500).json({message: 'Server error'})
     }
 }
 
+const getStreamInfoByCollegeUrl = async (req, res) => {
+    try {
+        const { slug } = req.params;
+        const college = await College.findOne({ slug }).populate('streams');
+        if (!college) return res.status(404).json({ message: 'College not found' });
+    
+        const streams = college.streams.map(stream => ({
+          streamId: stream._id,
+          streamName: stream.streamName,
+          streamCode: stream.streamCode,
+          streamStatus: stream.status,
+          streamIT: stream.isOfferingIT,
+          streamMedium: stream.medium,
+          streamIntake: stream.intake,
+          streamTotalFees: stream.fee ? stream.fee.totalFees : 'N/A'
+        }));
+    
+        res.status(200).json({message: 'College streams details', streams});
+      } catch (error) {
+        console.error('Error fetching course fees', error);
+        res.status(500).json({ message: 'Server error' });
+      }
+}
+
 export {
     registerStream,
     updateStream,
     getStream,
-    getStreamInfoByCollegeId
+    getStreamInfoByCollegeId,
+    getStreamInfoByCollegeUrl
 }

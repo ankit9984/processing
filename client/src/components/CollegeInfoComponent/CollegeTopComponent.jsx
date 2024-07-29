@@ -5,7 +5,8 @@ import { fetchCollegeByslug } from '../../store/CollegeInfoSlice';
 import { FaLocationPin } from "react-icons/fa6";
 import { FaCalendarAlt } from "react-icons/fa";
 
-function CollegeInfo({college}) {
+function CollegeTopInfo({college}) {
+  // console.log(college);
   // const { slug } = useParams();
   // const dispatch = useDispatch();
   // const { college, loading, error } = useSelector((state) => state.collegeInfo);
@@ -42,4 +43,4 @@ function CollegeInfo({college}) {
   );
 }
 
-export default CollegeInfo;
+export default CollegeTopInfo;
