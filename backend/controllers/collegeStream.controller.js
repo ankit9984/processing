@@ -3,18 +3,18 @@ import CollegeStream from "../models/collegeStream.model.js";
 
 const registerStream = async (req, res) => {
     try {
-        const {collegeId} = req.params;
-        const {streamName, streamCode, status, medium, intake, minority, isOfferingIT} = req.body;
+        const { collegeId } = req.params;
+        const { streamName, streamCode, status, medium, intake, minority, isOfferingIT } = req.body;
 
-        const stream = await CollegeStream.findOne({streamCode});
-        if(stream){
-            return res.status(404).json({error: 'StreamCode is already taken'})
+        const stream = await CollegeStream.findOne({ streamCode });
+        if (stream) {
+            return res.status(404).json({ error: 'StreamCode is already taken' })
         };
 
         const college = await College.findById(collegeId);
 
-        if(!college){
-            return res.status(400).json({error: 'College not found'})
+        if (!college) {
+            return res.status(400).json({ error: 'College not found' })
         }
 
         const newStream = new CollegeStream({
@@ -33,28 +33,28 @@ const registerStream = async (req, res) => {
 
         await college.save();
 
-        res.status(200).json({message: 'registerStream added successfull', newStream});
+        res.status(200).json({ message: 'registerStream added successfull', newStream });
     } catch (error) {
         console.log('registerStream controller', error);
-        res.status(500).json({message: 'Server error'})
+        res.status(500).json({ message: 'Server error' })
     }
 };
 
 const updateStream = async (req, res) => {
     try {
-        const {collegeId} = req.params;
-        const {streamId} = req.params;
+        const { collegeId } = req.params;
+        const { streamId } = req.params;
 
-        const {streamName, streamCode, status, medium, intake, minority, isOfferingIT} = req.body;
+        const { streamName, streamCode, status, medium, intake, minority, isOfferingIT } = req.body;
 
         const college = await College.findById(collegeId);
-        if(!college){
-            return res.status(400).json({message: 'College not found'})
+        if (!college) {
+            return res.status(400).json({ message: 'College not found' })
         };
 
         const stream = await CollegeStream.findById(streamId);
-        if(!stream){
-            return res.status(400).json({message: 'Stream is not found'})
+        if (!stream) {
+            return res.status(400).json({ message: 'Stream is not found' })
         };
 
         console.log(stream.streamCode);
@@ -71,52 +71,52 @@ const updateStream = async (req, res) => {
             stream.streamCode = streamCode;
         }
 
-       stream.streamName = streamName || stream.streamName;
-       stream.status = status || stream.status;
-       stream.medium = medium || stream.medium;
-       stream.intake = intake || stream.intake;
-       stream.minority = minority || stream.minority;
-       stream.isOfferingIT = isOfferingIT || stream.isOfferingIT;
+        stream.streamName = streamName || stream.streamName;
+        stream.status = status || stream.status;
+        stream.medium = medium || stream.medium;
+        stream.intake = intake || stream.intake;
+        stream.minority = minority || stream.minority;
+        stream.isOfferingIT = isOfferingIT || stream.isOfferingIT;
 
-       await stream.save();
+        await stream.save();
 
-       res.status(200).json({message: 'Stream update successfully', stream});
-       
+        res.status(200).json({ message: 'Stream update successfully', stream });
+
     } catch (error) {
         console.error('updateStream controller', error);
-        res.status(500).json({message: 'Server error'})
+        res.status(500).json({ message: 'Server error' })
     }
 }
 
 const getStream = async (req, res) => {
     try {
-        const {streamId} = req.params;
+        const { streamId } = req.params;
 
         const stream = await CollegeStream.findById(streamId);
-        if(!stream){
-            return res.status(400).json({message: 'Stream is not found'})
+        if (!stream) {
+            return res.status(400).json({ message: 'Stream is not found' })
         };
 
-        res.status(200).json({message: 'Stream data received successfully', stream})
+        res.status(200).json({ message: 'Stream data received successfully', stream })
     } catch (error) {
         console.error('getStream controller', error);
-        res.status(500).json({message: 'Server error'})
+        res.status(500).json({ message: 'Server error' })
     }
 }
 
 const getStreamInfoByCollegeId = async (req, res) => {
     try {
-        const {collegeId} = req.params;
+        const { collegeId } = req.params;
         const college = await College.findById(collegeId)
-        .populate({
-            path: 'streams',
-            populate: {
-                path: 'fee',
-                select: 'totalFees'
-            }
-        })
-        if(!college){
-            return res.status(400).json({message: 'College not found'})
+            .populate({
+                path: 'streams',
+                populate: {
+                    path: 'fee',
+                    select: 'totalFees'
+                }
+            })
+        if (!college) {
+            return res.status(400).json({ message: 'College not found' })
         };
 
         const streams = college.streams.map(stream => ({
@@ -127,15 +127,15 @@ const getStreamInfoByCollegeId = async (req, res) => {
             streamIT: stream.isOfferingIT,
             streamMedium: stream.medium,
             streamIntake: stream.intake,
-            streamTotalFees: stream.fee ? stream.fee.totalFees: 'N/A'
+            streamTotalFees: stream.fee ? stream.fee.totalFees : 'N/A'
         }));
 
         console.log(streams);
 
-        res.status(200).json({message: 'CollegeStream detials get successfully', streams})
+        res.status(200).json({ message: 'CollegeStream detials get successfully', streams })
     } catch (error) {
         console.error('getStreamInfoByCollegeId controller', error);
-        res.status(500).json({message: 'Server error'})
+        res.status(500).json({ message: 'Server error' })
     }
 }
 
@@ -144,23 +144,40 @@ const getStreamInfoByCollegeUrl = async (req, res) => {
         const { slug } = req.params;
         const college = await College.findOne({ slug }).populate('streams');
         if (!college) return res.status(404).json({ message: 'College not found' });
-    
+
         const streams = college.streams.map(stream => ({
-          streamId: stream._id,
-          streamName: stream.streamName,
-          streamCode: stream.streamCode,
-          streamStatus: stream.status,
-          streamIT: stream.isOfferingIT,
-          streamMedium: stream.medium,
-          streamIntake: stream.intake,
-          streamTotalFees: stream.fee ? stream.fee.totalFees : 'N/A'
+            streamId: stream._id,
+            streamName: stream.streamName,
+            streamCode: stream.streamCode,
+            streamStatus: stream.status,
+            streamIT: stream.isOfferingIT,
+            streamMedium: stream.medium,
+            streamIntake: stream.intake,
+            streamTotalFees: stream.fee ? stream.fee.totalFees : 'N/A'
         }));
-    
-        res.status(200).json({message: 'College streams details', streams});
-      } catch (error) {
+
+        res.status(200).json({ message: 'College streams details', streams });
+    } catch (error) {
         console.error('Error fetching course fees', error);
         res.status(500).json({ message: 'Server error' });
-      }
+    }
+}
+
+const getFullStreamDetailsByStreamId = async (req, res) => {
+    try {
+        const { streamId } = req.params;
+
+        const stream = await CollegeStream.findById(streamId).populate('optionalSubject').populate('fee');
+
+        if (!stream) {
+            return res.status(400).json({ message: 'Stream not found' })
+        };
+
+        res.status(200).json({ message: 'Stream get successfull', stream })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({message: 'Server error'})
+    }
 }
 
 export {
@@ -168,5 +185,6 @@ export {
     updateStream,
     getStream,
     getStreamInfoByCollegeId,
-    getStreamInfoByCollegeUrl
+    getStreamInfoByCollegeUrl,
+    getFullStreamDetailsByStreamId
 }

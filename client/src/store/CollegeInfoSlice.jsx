@@ -33,7 +33,7 @@ export const fetchStreamInfoByCollegeId = createAsyncThunk(
     async(collegeId, {rejectWithValue}) => {
         try {
             const response = await axiosInstance.get(`/colleges/getstreaminfobycollegeid/${collegeId}`);
-            // console.log(response.data);
+            console.log(response.data);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data)
@@ -54,6 +54,19 @@ export const fetchStreamInfoByCollegeUrl = createAsyncThunk(
     }
 );
 
+export const fetchFullStreamDetailsByStreamId = createAsyncThunk(
+    'streamInfo/fetchFullStreamDetailsByStreamId',
+        async (streamId, {rejectWithValue}) => {
+            try {
+                const response = await axiosInstance.get(`/colleges/getstreamdetailsbystreamid/${streamId}`);
+                console.log(response.data);
+                return response.data;
+            } catch (error) {
+                return rejectWithValue(error.response.data)
+            }
+        }
+)
+
 
 
 const collegeInfoSlice = createSlice({
@@ -61,6 +74,7 @@ const collegeInfoSlice = createSlice({
     initialState: {
         college: null,
         streamDetails: [],
+        streamFullDetails: null,
         loading: false,
         error: null
     },
@@ -102,7 +116,19 @@ const collegeInfoSlice = createSlice({
             .addCase(fetchStreamInfoByCollegeUrl.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload?.message || 'Failed to fetch stream details';
-            });
+            })
+            .addCase(fetchFullStreamDetailsByStreamId.pending, (state) => {
+                state.loading = false;
+                state.error = null
+            })
+            .addCase(fetchFullStreamDetailsByStreamId.fulfilled, (state, action) => {
+                state.loading = false;
+                state.streamFullDetails = action.payload.stream
+            })
+            .addCase(fetchFullStreamDetailsByStreamId.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload?.message || 'Failed to fetch full Stream details'
+            })
     }
 });
 

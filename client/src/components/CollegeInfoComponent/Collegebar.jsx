@@ -1,11 +1,10 @@
 import React from 'react';
 import { FaInfoCircle, FaGraduationCap, FaMapMarkerAlt, FaChartLine, FaMoneyBillWave, FaImage } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { fetchCollegeById, fetchStreamInfoByCollegeId } from '../../store/CollegeInfoSlice';
 
 function Collegebar({setCurrentSection}) {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { college, loading, error } = useSelector((state) => state.collegeInfo);
 
@@ -22,7 +21,7 @@ function Collegebar({setCurrentSection}) {
       case 'Courses':
         dispatch(fetchStreamInfoByCollegeId(id));
         setCurrentSection(location)
-        navigate('course-fees')
+        break;
       default:
         alert('Invalid section location');
     }

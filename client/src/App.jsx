@@ -3,6 +3,7 @@ import Navbar from './components/common/Navbar'
 import { Routes, Route } from 'react-router-dom'
 import HomePage from './pages/Homepage/HomePage'
 import CollegePageInfo from './pages/CollegePage/CollegePageInfo'
+import CollegeCourse from './components/CollegeInfoComponent/CollegeCourse&Fee'
 
 function App() {
   return (
@@ -10,7 +11,8 @@ function App() {
       <Navbar />
       <Routes>
         <Route path='/' element={<HomePage />} />
-        <Route path='/college/:slug/*' element={<CollegePageInfo/>} />
+        <Route path='/college/:slug/' element={<CollegePageInfo/>} />
+        {/* <Route path='/college/:slug/course-fees' element={<CollegeCourse/>} /> */}
       </Routes>
     </div>
   )

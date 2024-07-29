@@ -34,6 +34,10 @@ const collegeStreamSchema = new mongoose.Schema({
         required: true,
         default: false
     },
+    bifocalSubject: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'BifocalSubject'
+    },
     fee: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'CollegeFee'
