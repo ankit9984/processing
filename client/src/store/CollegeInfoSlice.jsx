@@ -59,7 +59,7 @@ export const fetchFullStreamDetailsByStreamId = createAsyncThunk(
         async (streamId, {rejectWithValue}) => {
             try {
                 const response = await axiosInstance.get(`/colleges/getstreamdetailsbystreamid/${streamId}`);
-                console.log(response.data);
+                // console.log(response.data);
                 return response.data;
             } catch (error) {
                 return rejectWithValue(error.response.data)

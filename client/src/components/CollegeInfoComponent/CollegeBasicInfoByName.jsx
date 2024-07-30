@@ -21,10 +21,15 @@ function CollegeBasicInfoByName() {
     }
   };
 
+  // console.log(streamFullDetails);
+  // const datas = [
+  //   {name: streamFullDetails?.optionalSubject?.subject, details: streamFullDetails?.optionalSubject?.intake}
+  // ]
+
   return (
-    <div>
+    <div className='border'>
       {streamDetails?.streams?.map((stream) => (
-        <div className='max-w-6xl mx-auto' key={stream.streamId}>
+        <div className={`max-w-6xl mx-auto bg-gray-100 ${stream.streamId === activeStreamId ? 'bg-slate-100': 'bg-opacity-0'} shadow-2xl`} key={stream.streamId}>
           <div className='flex justify-between items-center bg-white m-5 p-5 mx-w-6xl rounded shadow-lg border-gray-200 border'>
             <div className='flex gap-5'>
               <p className='text-sm sm:text-2xl'>{stream.streamName}</p>
@@ -33,8 +38,8 @@ function CollegeBasicInfoByName() {
             <IoIosArrowDown onClick={() => handleClick(stream.streamId)} fontSize={25} />
           </div>
           {activeStreamId === stream.streamId && (
-            <div>
-              <div className='flex flex-col'>
+            <div className='px-5'>
+              <div className='flex flex-col shadow-lg mb-5 p-2 rounded'>
                 <div className='bg-gray-200 p-2 rounded'>
                   <h1>Stream Basic Information</h1>
                 </div>
@@ -65,7 +70,7 @@ function CollegeBasicInfoByName() {
                   </div>
                 </div>
               </div>
-              <div className='w-full my-2'>
+              <div className='w-full my-2 shadow-lg mb-5 p-2 rounded'>
                 <div>
                   <h1 className='p-2 bg-gray-100'>Fee Details</h1>
                 </div>
@@ -88,6 +93,35 @@ function CollegeBasicInfoByName() {
                         <td className='px-4 py-2 border-b border-gray-200 text-center text-sm text-gray-900'>{streamFullDetails?.fee?.totalFees || 'N/A'}</td>
                         <td className='px-4 py-2 border-b border-gray-200 text-center text-sm text-gray-900'>{streamFullDetails?.fee?.annualFeesForIT || 'N/A'}</td>
                       </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div className='shadow-lg mb-5 p-2 rounded'>
+                <div className='bg-gray-200'>
+                  <h1>Optional Subjects</h1>
+                </div>
+                <div>
+                  <table className='w-full'>
+                    <thead>
+                      <tr>
+                        <th className='border p-2'>Sr. No.</th>
+                        <th className='border p-2'>Subjects</th>
+                        <th className='border p-2'>Intake</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {streamFullDetails?.optionalSubject?.map((subject, index) => (
+                        <tr key={subject._id}>
+                          <td className='border p-2'>{index + 1}</td>
+                          <td className='border p-2'>{subject.subject}</td>
+                          <td className='border p-2'>{subject.intake}</td>
+                        </tr>
+                      )) || (
+                        <tr>
+                          <td colSpan="3">No Optional Subjects Available</td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
