@@ -5,7 +5,7 @@ import CollegeBasicInfoByName from './CollegeBasicInfoByName'
 
 function CollegeCourse() {
   return (
-    <div>
+    <div className=''>
       <CollegeBasicStreamInfo />
       <CollegeBasicInfoByName/>
       <CollegeFullStreamDetails/>
