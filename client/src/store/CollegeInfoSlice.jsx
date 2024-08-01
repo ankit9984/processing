@@ -92,6 +92,19 @@ export const fetchCollegeAddressByCollegeId = createAsyncThunk(
             return rejectWithValue(error.response.data);
         }
     }
+);
+
+export const fetchCollegeSeatsFullInfoByStreamId = createAsyncThunk(
+    'seatsFullInfo/fetchCollegeSeatsFullInfoByStreamId',
+    async(streamId, {rejectWithValue}) => {
+       try {
+        const response = await axiosInstance.get(`/reservationseats/getseatsinfobystreamid/${streamId}`);
+        console.log('Full Seats', response.data);
+        return response.data;
+       } catch (error) {
+        return rejectWithValue(error.response.data)
+       }
+    }
 )
 
 
@@ -104,6 +117,8 @@ const collegeInfoSlice = createSlice({
         streamFullDetails: null,
         collegeAddressInfo: null,
         seatsDetails: [],
+        seatsFullInfo: [],
+        loadingSeatsFullInfo:false,
         loadingSeats: false,
         loadingAddressInfo: false,
         loading: false,
@@ -179,6 +194,22 @@ const collegeInfoSlice = createSlice({
             .addCase(fetchSeatsInfoByCollegeId.fulfilled, (state, action) => {
                 state.loadingSeats = false,
                 state.seatsDetails = action.payload.college
+            })
+            .addCase(fetchSeatsInfoByCollegeId.rejected, (state, action) => {
+                state.loadingSeats = false,
+                state.error = action.payload?.message || 'Failed to fetch Seats Info'
+            })
+            .addCase(fetchCollegeSeatsFullInfoByStreamId.pending, (state) => {
+                state.loadingSeatsFullInfo = true,
+                state.error = null
+            })
+            .addCase(fetchCollegeSeatsFullInfoByStreamId.fulfilled, (state, action) => {
+                state.loadingSeatsFullInfo = false,
+                state.seatsFullInfo = action.payload.stream
+            })
+            .addCase(fetchCollegeSeatsFullInfoByStreamId.rejected, (state, action) => {
+                state.loadingSeatsFullInfo = false,
+                state.error = action.payload?.message || 'Failed to fetch Full Seats Inof'
             })
     }
 });

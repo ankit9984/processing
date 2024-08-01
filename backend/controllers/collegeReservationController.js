@@ -95,7 +95,7 @@ const getReservationSeatsInfoBycollegeId = async (req, res) => {
         .select('streams')
         .populate({
             path: 'streams',
-            select: '_id streamCode streamName status intake'
+            select: '_id streamCode streamName status intake minority medium'
         })
         if(!college){
             return res.status(400).json({error: 'Stream not found'})
@@ -107,7 +107,9 @@ const getReservationSeatsInfoBycollegeId = async (req, res) => {
                 streamCode: stream.streamCode,
                 streamName: stream.streamName,
                 streamStatus: stream.status,
-                streamIntakeCapacity: stream.intake
+                streamIntakeCapacity: stream.intake,
+                streamMinority: stream?.minority,
+                streamMedium: stream.medium
             }))
         }
 
@@ -118,10 +120,31 @@ const getReservationSeatsInfoBycollegeId = async (req, res) => {
     }
 }
 
+const getSeatsInfoByStreamId = async (req, res) => {
+    try {
+        const {streamId} = req.params;
+
+        const stream = await CollegeStream.findById(streamId)
+        .select('streamName streamCode status medium intake minority reservationSeats')
+        .populate({
+            path: 'reservationSeats',
+        })
+        if(!stream){
+            return res.status(404).json({error: 'Stream not found'})
+        };
+
+
+        res.status(200).json({message: 'Reservation seats retrieve successfully', stream})
+    } catch (error) {
+        console.error('getSeatsInfoByStreamId controller', error);
+        res.status(500).json({message: 'Server error'})
+    }
+}
 
 export {
     createReservation,
     udpateReservation,
     getReservation,
-    getReservationSeatsInfoBycollegeId
+    getReservationSeatsInfoBycollegeId,
+    getSeatsInfoByStreamId
 }

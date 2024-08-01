@@ -28,6 +28,7 @@ function Collegebar({setCurrentSection}) {
         break;
       case 'Seats': 
         dispatch(fetchSeatsInfoByCollegeId(id))
+        setCurrentSection(location)
         break;
       default:
         alert('Invalid section location');

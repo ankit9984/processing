@@ -24,28 +24,23 @@ function CollegeBasicStreamInfo() {
             <div className='bg-gray-100  p-5 rounded-md'>
                 <table className='min-w-full bg-white border border-gray-200'>
                     <thead className='bg-gray-50'>
-                        <tr>
-                            <th className='px-4 py-2 text-xs font-medium text-gray-500 border-b border-gray-200 text-center'>Serial No</th>
-                            <th className='px-4 py-2 text-xs font-medium text-gray-500 border-b border-gray-200 text-center'>Stream Code</th>
-                            <th className='px-4 py-2 text-xs font-medium text-gray-500 border-b border-gray-200 text-center'>Stream</th>
-                            <th className='px-4 py-2 text-xs font-medium text-gray-500 border-b border-gray-200 text-center'>Status</th>
-                            <th className='px-4 py-2 text-xs font-medium text-gray-500 border-b border-gray-200 text-center'>Medium</th>
-                            <th className='px-4 py-2 text-xs font-medium text-gray-500 border-b border-gray-200 text-center'>Intake</th>
-                            <th className='px-4 py-2 text-xs font-medium text-gray-500 border-b border-gray-200 text-center'>Fees</th>
-                        </tr>
+                        {['Serial No', 'Stream Code', 'Stream', 'Status', 'Medium', 'Intake', 'Fees'].map(header => (
+                            <th key={header} className='px-4 py-2 text-xs font-medium text-gray-500 border-b border-gray-200 text-center'>
+                                {header}
+                            </th>
+                        ))}
                     </thead>
                     <tbody>
                         {streamDetails.streams.map((stream, index) => (
                             <tr key={stream.streamId} className='bg-gray-50'>
-                                <td className='px-4 py-2 border-b border-gray-200 text-center text-sm text-gray-900'>{index+1}</td>
-                                <td className='px-4 py-2 border-b border-gray-200 text-center text-sm text-gray-900'>{stream.streamCode}</td>
-                                <td className='px-4 py-2 border-b border-gray-200 text-center text-sm text-gray-900'>{stream.streamName}</td>
-                                <td className='px-4 py-2 border-b border-gray-200 text-center text-sm text-gray-900'>{stream.streamStatus}</td>
-                                <td className='px-4 py-2 border-b border-gray-200 text-center text-sm text-gray-900'>{stream.streamMedium}</td>
-                                <td className='px-4 py-2 border-b border-gray-200 text-center text-sm text-gray-900'>{stream.streamIntake}</td>
-                                <td className='px-4 py-2 border-b border-gray-200 text-center text-sm text-gray-900'>{stream.streamTotalFees || 'N/A'}</td>
+                                {[index + 1, stream.streamCode, stream.streamName, stream.streamStatus, stream.streamMedium, stream.streamIntake, stream.streamTotalFees || 'N/A'].map((item, idx) => (
+                                    <td key={idx} className='px-4 py-2 border-b border-gray-200 text-center text-sm text-gray-900'>
+                                        {item}
+                                    </td>
+                                ))}
                             </tr>
                         ))}
+
                     </tbody>
                 </table>
             </div>
