@@ -1,3 +1,4 @@
+import College from "../models/collegeDetails.model.js";
 import ReservationDetails from "../models/collegeReservationDetails.Model.js";
 import CollegeStream from "../models/collegeStream.model.js";
 
@@ -86,9 +87,41 @@ const getReservation = async (req, res) => {
     }
 }
 
+const getReservationSeatsInfoBycollegeId = async (req, res) => {
+    try {
+        const {collegeId} = req.params;
+
+        const college = await College.findById(collegeId)
+        .select('streams')
+        .populate({
+            path: 'streams',
+            select: '_id streamCode streamName status intake'
+        })
+        if(!college){
+            return res.status(400).json({error: 'Stream not found'})
+        };
+
+        const customResponse = {
+            streams: college.streams.map((stream) => ({
+                streamId: stream._id,
+                streamCode: stream.streamCode,
+                streamName: stream.streamName,
+                streamStatus: stream.status,
+                streamIntakeCapacity: stream.intake
+            }))
+        }
+
+        res.status(200).json({message: 'College Info get successfully', college: customResponse})
+    } catch (error) {
+        console.error('getReservationSeatsInfoBycollegeId controller', error.message);
+        res.status(500).json({message: error.message})
+    }
+}
+
 
 export {
     createReservation,
     udpateReservation,
-    getReservation
+    getReservation,
+    getReservationSeatsInfoBycollegeId
 }

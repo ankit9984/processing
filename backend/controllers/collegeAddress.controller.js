@@ -89,10 +89,14 @@ const getCollegeAddress = async (req, res) => {
     try {
         const {addressId} = req.params;
 
-        const collegeAddress = await CollegeAddress.findById(addressId);
+        const collegeAddress = await CollegeAddress.findById(addressId)
+        .select('-_id -college -createdAt -updatedAt -__v');
+
         if(!collegeAddress){
             return res.status(400).json({error: 'College Address not found'});
         };
+
+        console.log(collegeAddress);
 
         res.status(200).json({message: 'College address found successfully', collegeAddress})
     } catch (error) {

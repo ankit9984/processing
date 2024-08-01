@@ -9,6 +9,7 @@ import CollegeInfo from '../../components/CollegeInfoComponent/CollegeInfo';
 import CollegeCourse from '../../components/CollegeInfoComponent/CollegeCourse&Fee';
 // import CollegeInfo from '../../components/CollegeInfoComponent/CollegeInfo';
 import CollegeTopInfo from '../../components/CollegeInfoComponent/CollegeTopComponent';
+import CollegeAddressInfo from '../../components/CollegeInfoComponent/CollegeAddressInfo';
 
 function CollegePageInfo() {
   const {slug} = useParams();
@@ -35,6 +36,8 @@ function CollegePageInfo() {
         return <CollegeInfo college={college}/>;
       case 'Courses': 
         return <CollegeCourse/>;
+      case 'Address' : 
+        return <CollegeAddressInfo />
       default : 
         return <div>hey</div>
     }

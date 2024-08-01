@@ -7,7 +7,7 @@ export const fetchCollegeByslug = createAsyncThunk(
     async(slug, {rejectWithValue}) => {
         try {
             const response = await axiosInstance.get(`/colleges/getcollege/slug/${slug}`);
-            // console.log(response.data);
+            console.log('hey', response.data);
             return response.data.college;
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -33,7 +33,7 @@ export const fetchStreamInfoByCollegeId = createAsyncThunk(
     async(collegeId, {rejectWithValue}) => {
         try {
             const response = await axiosInstance.get(`/colleges/getstreaminfobycollegeid/${collegeId}`);
-            console.log(response.data);
+            console.log('streamInfo', response.data);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data)
@@ -54,6 +54,20 @@ export const fetchStreamInfoByCollegeUrl = createAsyncThunk(
     }
 );
 
+
+export const fetchSeatsInfoByCollegeId = createAsyncThunk(
+    'seatsInfo/fetchSeatsInfoByCollegeId',
+    async(collegeId, {rejectWithValue}) => {
+        try {
+            const response = await axiosInstance.get(`/reservationseats/getstreamandseatsinfo/${collegeId}`);
+            console.log(response.data);
+            return response.data
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+        }
+    }
+)
+
 export const fetchFullStreamDetailsByStreamId = createAsyncThunk(
     'streamInfo/fetchFullStreamDetailsByStreamId',
         async (streamId, {rejectWithValue}) => {
@@ -65,6 +79,19 @@ export const fetchFullStreamDetailsByStreamId = createAsyncThunk(
                 return rejectWithValue(error.response.data)
             }
         }
+);
+
+export const fetchCollegeAddressByCollegeId = createAsyncThunk(
+    'addressInfo/fetchCollegeAddressByCollegeId',
+    async(collegeId, {rejectWithValue}) => {
+        try {
+            const response = await axiosInstance.get(`/colleges/getcollegeaddress/${collegeId}`);
+            // console.log(response.data);
+            return response.data
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
 )
 
 
@@ -75,6 +102,10 @@ const collegeInfoSlice = createSlice({
         college: null,
         streamDetails: [],
         streamFullDetails: null,
+        collegeAddressInfo: null,
+        seatsDetails: [],
+        loadingSeats: false,
+        loadingAddressInfo: false,
         loading: false,
         error: null
     },
@@ -128,6 +159,26 @@ const collegeInfoSlice = createSlice({
             .addCase(fetchFullStreamDetailsByStreamId.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload?.message || 'Failed to fetch full Stream details'
+            })
+            .addCase(fetchCollegeAddressByCollegeId.pending, (state) => {
+                state.loadingAddressInfo = true,
+                state.error = null
+            })
+            .addCase(fetchCollegeAddressByCollegeId.fulfilled, (state, action) => {
+                state.loadingAddressInfo = false;
+                state.collegeAddressInfo = action.payload.collegeAddress
+            })
+            .addCase(fetchCollegeAddressByCollegeId.rejected, (state, action) => {
+                state.loadingAddressInfo = false;
+                state.error = action.payload?.message || 'Failed to fetch college Address Info'
+            })
+            .addCase(fetchSeatsInfoByCollegeId.pending, (state) => {
+                state.loadingSeats = true,
+                state.error = null
+            })
+            .addCase(fetchSeatsInfoByCollegeId.fulfilled, (state, action) => {
+                state.loadingSeats = false,
+                state.seatsDetails = action.payload.college
             })
     }
 });

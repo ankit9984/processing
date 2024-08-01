@@ -134,11 +134,11 @@ const getCollegeBYSlug = async (req, res) => {
             .select('jrCollegeName typeOfManagement yearOfFoundation collegeType')
             .populate({
                 path: 'address',
-                select: 'city pinCode'
+                select: '_id'
             })
             .populate({
                 path: 'streams',
-                select: '_id fee optionalSubject reservationSeats cutOff',
+                select: '_id',
                 populate: [
                     { path: 'fee', select: '_id' },
                     { path: 'optionalSubject', select: '_id' },
@@ -157,8 +157,7 @@ const getCollegeBYSlug = async (req, res) => {
             foundationYear: college.yearOfFoundation,
             type: college.collegeType,
             address: {
-                city: college.address?.city,
-                pinCode: college.address?.pinCode
+               collegeAddressId : college.address?._id
             },
             streams: college.streams.map((stream) => ({
                 _id: stream._id,
@@ -166,7 +165,7 @@ const getCollegeBYSlug = async (req, res) => {
                 optionalSubjectIds: stream.optionalSubject,
                 reservationSeatIds: stream.reservationSeats,
                 cutOffIds: stream.cutOff
-            }))
+            })),
         }
 
         res.status(201).json({ message: 'CollegeInfo retrieve successfully', college })
