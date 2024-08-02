@@ -22,7 +22,7 @@ function CollegeSeatsInfo() {
             </thead>
             <tbody>
                 {seatsDetails.streams.map((stream, index) => (
-                    <tr className='bg-gray-50'>
+                    <tr key={index} className='bg-gray-50'>
                         <td className='px-4 py-2 border-b border-gray-200 text-center text-sm text-gray-900'>{index + 1}</td>
                         <td className='px-4 py-2 border-b border-gray-200 text-center text-sm text-gray-900'>{stream.streamCode}</td>
                         <td className='px-4 py-2 border-b border-gray-200 text-center text-sm text-gray-900'>{stream.streamName}</td>

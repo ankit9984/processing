@@ -7,7 +7,7 @@ export const fetchCollegeByslug = createAsyncThunk(
     async(slug, {rejectWithValue}) => {
         try {
             const response = await axiosInstance.get(`/colleges/getcollege/slug/${slug}`);
-            console.log('hey', response.data);
+            // console.log('hey', response.data);
             return response.data.college;
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -33,7 +33,7 @@ export const fetchStreamInfoByCollegeId = createAsyncThunk(
     async(collegeId, {rejectWithValue}) => {
         try {
             const response = await axiosInstance.get(`/colleges/getstreaminfobycollegeid/${collegeId}`);
-            console.log('streamInfo', response.data);
+            // console.log('streamInfo', response.data);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data)
@@ -46,7 +46,7 @@ export const fetchStreamInfoByCollegeUrl = createAsyncThunk(
     async (slug, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(`/colleges/getstreaminfobycollegeurl/${slug}/course-fees`);
-            console.log(response.data);
+            // console.log(response.data);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -60,7 +60,7 @@ export const fetchSeatsInfoByCollegeId = createAsyncThunk(
     async(collegeId, {rejectWithValue}) => {
         try {
             const response = await axiosInstance.get(`/reservationseats/getstreamandseatsinfo/${collegeId}`);
-            console.log(response.data);
+            // console.log(response.data);
             return response.data
         } catch (error) {
             return rejectWithValue(error.response.data)
