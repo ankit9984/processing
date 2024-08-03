@@ -105,6 +105,19 @@ export const fetchCollegeSeatsFullInfoByStreamId = createAsyncThunk(
         return rejectWithValue(error.response.data)
        }
     }
+);
+
+export const fetchCollegeCutoffbyCollegeId = createAsyncThunk(
+    'cutOffInfo/fetchCollegeCutoffbyCollegeId',
+    async(collegeId, {rejectWithValue}) => {
+        try {
+            const response = await axiosInstance.get(`/colleges/getcutoffbycollegeid/${collegeId}`);
+            console.log('CutOff', response.data);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data)
+        }
+    }
 )
 
 
@@ -118,6 +131,8 @@ const collegeInfoSlice = createSlice({
         collegeAddressInfo: null,
         seatsDetails: [],
         seatsFullInfo: [],
+        cutOffInfo: null,
+        loadingCutOff: false,
         loadingSeatsFullInfo:false,
         loadingSeats: false,
         loadingAddressInfo: false,
@@ -210,6 +225,18 @@ const collegeInfoSlice = createSlice({
             .addCase(fetchCollegeSeatsFullInfoByStreamId.rejected, (state, action) => {
                 state.loadingSeatsFullInfo = false,
                 state.error = action.payload?.message || 'Failed to fetch Full Seats Inof'
+            })
+            .addCase(fetchCollegeCutoffbyCollegeId.pending,(state) => {
+                state.loadingCutOff = true,
+                state.error = null
+            })
+            .addCase(fetchCollegeCutoffbyCollegeId.fulfilled, (state, action) => {
+                state.loadingCutOff = false,
+                state.cutOffInfo = action.payload.college;
+            })
+            .addCase(fetchCollegeCutoffbyCollegeId.rejected, (state, action) => {
+                state.loadingCutOff = false,
+                state.error = action.payload?.message || 'Failed to fetch cutoff'
             })
     }
 });

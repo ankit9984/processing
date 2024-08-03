@@ -2,7 +2,7 @@ import React from 'react';
 import { FaInfoCircle, FaGraduationCap, FaMapMarkerAlt, FaChartLine, FaMoneyBillWave, FaImage } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchCollegeAddressByCollegeId, fetchCollegeById, fetchSeatsInfoByCollegeId, fetchStreamInfoByCollegeId } from '../../store/CollegeInfoSlice';
+import { fetchCollegeAddressByCollegeId, fetchCollegeById, fetchCollegeCutoffbyCollegeId, fetchSeatsInfoByCollegeId, fetchStreamInfoByCollegeId } from '../../store/CollegeInfoSlice';
 
 function Collegebar({setCurrentSection}) {
   const dispatch = useDispatch();
@@ -27,7 +27,11 @@ function Collegebar({setCurrentSection}) {
         setCurrentSection(location)
         break;
       case 'Seats': 
-        dispatch(fetchSeatsInfoByCollegeId(id))
+        dispatch(fetchSeatsInfoByCollegeId(id));
+        setCurrentSection(location)
+        break;
+      case 'CutOff':
+        dispatch(fetchCollegeCutoffbyCollegeId(id));
         setCurrentSection(location)
         break;
       default:
@@ -40,6 +44,7 @@ function Collegebar({setCurrentSection}) {
     { id: college._id, icon: FaGraduationCap, label: 'Courses & Fees', location: 'Courses' },
     { id: college.address?.collegeAddressId, icon: FaMapMarkerAlt, label: 'Address', location: 'Address' },
     { id: college._id, icon: FaChartLine, label: 'Seats', location: 'Seats' },
+    { id: college._id, icon: FaChartLine, label: 'CutOff', location: 'CutOff' },
     { id: college._id, icon: FaMoneyBillWave, label: 'Fees', location: 'Fees' },
     { id: college._id, icon: FaImage, label: 'Photo', location: 'Photo' }
   ];

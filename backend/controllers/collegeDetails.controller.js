@@ -131,7 +131,7 @@ const getCollegeBYSlug = async (req, res) => {
         const { slug } = req.params;
         console.log(slug);
         let college = await College.findOne({ slug })
-            .select('jrCollegeName typeOfManagement yearOfFoundation collegeType')
+            .select('jrCollegeName typeOfManagement yearOfFoundation collegeType slug')
             .populate({
                 path: 'address',
                 select: '_id'
@@ -156,6 +156,7 @@ const getCollegeBYSlug = async (req, res) => {
             managment: college.typeOfManagement,
             foundationYear: college.yearOfFoundation,
             type: college.collegeType,
+            slug: college.slug,
             address: {
                collegeAddressId : college.address?._id
             },

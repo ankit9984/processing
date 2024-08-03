@@ -11,6 +11,7 @@ import CollegeCourse from '../../components/CollegeInfoComponent/CollegeCourse&F
 import CollegeTopInfo from '../../components/CollegeInfoComponent/CollegeTopComponent';
 import CollegeAddressInfo from '../../components/CollegeInfoComponent/CollegeAddressInfo';
 import CollegeAllSeats from '../../components/CollegeInfoComponent/CollegeAllSeats';
+import CollegeCutOffDetails from '../../components/CollegeInfoComponent/CollegeCutOffDetails';
 
 function CollegePageInfo() {
   const {slug} = useParams();
@@ -41,6 +42,8 @@ function CollegePageInfo() {
         return <CollegeAddressInfo />
       case 'Seats':
         return <CollegeAllSeats />
+      case 'CutOff': 
+        return <CollegeCutOffDetails/>
       default : 
         return <div>hey</div>
     }
