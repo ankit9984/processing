@@ -1,68 +1,73 @@
-// Import necessary modules (assuming these are defined elsewhere)
-const mongoose = require('mongoose');
-const College = require('./models/College');
-const CollegeStream = require('./models/CollegeStream');
-const Cutoff = require('./models/Cutoff');
+import College from "../models/collegeDetails.model.js";
+import CollegeStream from "../models/collegeStream.model.js"; // Adjust path as necessary
 
-// Define the main function
-const getCutOffBasedOnCollegeId = async (req, res) => {
-    // Extract collegeId from the request parameters
-    const { collegeId } = req.params;
-
+const filterColleges = async (req, res) => {
     try {
-        // Step 1: Find the college
-        const college = await College.findById(collegeId);
+        // Extract query parameters from the request
+        const {
+            region,
+            zone,
+            area,
+            collegeType,
+            streamName,
+            status,
+            medium,
+            minority
+        } = req.query;
 
-        // Step 2: Check if the college was found
-        if (!college) {
-            return res.status(404).json({ error: 'College not found' });
-        }
-
-        // Step 3: Get the streams for this college
-        const streams = await CollegeStream.find({ _id: { $in: college.streams } });
-
-        // Step 4: Get cutoffs for each stream
-        const streamsWithCutoffs = await Promise.all(streams.map(async (stream) => {
-            const cutoff = await Cutoff.findById(stream.cutOff);
-            
-            // Filter and transform cutoff data
-            const filteredCutoffs = cutoff.cutOffs
-                .filter(c => c.category === 'Pure')
-                .map(c => ({
-                    category: c.category,
-                    data: { General: c.data.General }
-                }));
-
-            return {
-                _id: stream._id,
-                streamName: stream.streamName,
-                streamCode: stream.streamCode,
-                status: stream.status,
-                cutOff: {
-                    year: cutoff.year,
-                    cutOffs: filteredCutoffs
+        // Build the aggregation pipeline
+        const pipeline = [
+            {
+                $lookup: {
+                    from: 'collegestreams', // Collection name for CollegeStream model
+                    localField: 'streams',
+                    foreignField: '_id',
+                    as: 'streams'
                 }
-            };
-        }));
+            },
+            {
+                $unwind: '$streams'
+            },
+            {
+                $match: {
+                    ...(region ? { 'address.region': region } : {}),
+                    ...(zone ? { 'address.zone': zone } : {}),
+                    ...(area ? { 'address.area': area } : {}),
+                    ...(collegeType ? { collegeType: collegeType } : {}),
+                    ...(streamName ? { 'streams.streamName': streamName } : {}),
+                    ...(status ? { 'streams.status': status } : {}),
+                    ...(medium ? { 'streams.medium': medium } : {}),
+                    ...(minority ? { 'streams.minority': minority } : {})
+                }
+            },
+            {
+                $group: {
+                    _id: '$address.region', // Group by region
+                    totalColleges: { $sum: 1 }, // Count number of colleges per region
+                    colleges: { $push: { jrCollegeName: '$jrCollegeName', popularName: '$popularName', streams: '$streams' } } // Collect details
+                }
+            },
+            {
+                $project: {
+                    _id: 0, // Exclude _id field
+                    region: '$_id', // Rename _id to region
+                    totalColleges: 1,
+                    colleges: 1
+                }
+            }
+        ];
 
-        // Step 5: Prepare the response
-        const response = {
-            _id: college._id,
-            streams: streamsWithCutoffs
-        };
+        // Execute the aggregation query
+        const colleges = await College.aggregate(pipeline);
 
-        // Step 6: Send the successful response
-        res.status(200).json({ 
-            message: 'Cutoff retrieved successfully', 
-            college: response 
-        });
-
+        // Return the results
+        res.status(200).json(colleges);
     } catch (error) {
-        // Step 7: Handle any errors
-        console.error('Error in getCutOffBasedOnCollegeId', error);
+        console.error('filterColleges controller', error);
         res.status(500).json({ message: 'Server error' });
     }
 };
 
-// Export the function so it can be used in other files
-module.exports = getCutOffBasedOnCollegeId;
+export {
+    filterColleges
+};
