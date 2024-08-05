@@ -5,7 +5,7 @@ import { getCollegeAddress, registerCollegeAddress, updateCollegeAddress } from 
 import { getFullStreamDetailsByStreamId, getStream, getStreamInfoByCollegeId, getStreamInfoByCollegeUrl, registerStream, updateStream } from '../controllers/collegeStream.controller.js';
 import { addFee, getFee, updateFee } from '../controllers/collegeFee.controller.js';
 import { addSubject, get, getSubject, updateSubject } from '../controllers/collegeOptionalSubject.controller.js';
-import { getCutOffBasedOnCollegeId, registerCutOff } from '../controllers/collegeCutOff.controller.js';
+import { getCutOff, getCutOffBasedOnCollegeId,getCutOffDetailsByStreamId,registerCutOff } from '../controllers/collegeCutOff.controller.js';
 import { createBifocalSubject, getAllBifocalSubjects, getBifocalSubjectById, updateBifocalSubject, deleteBifocalSubject } from '../controllers/collegeBifocalSubjectController.js';
 
 
@@ -47,6 +47,8 @@ router.get('/getsubject/:subjectId', getSubject)
 router.get('/get', get);
 
 router.post('/addcutoff/:streamId', registerCutOff);
+router.get('/getcutoff/:collegeId', getCutOff);
 router.get('/getcutoffbycollegeid/:collegeId', getCutOffBasedOnCollegeId);
+router.get('/getcutoffbystreamid/:streamId', getCutOffDetailsByStreamId);
 
 export default router;

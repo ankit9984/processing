@@ -12,7 +12,7 @@ const cutOffDataSchema = new mongoose.Schema({
     SEBC: { type: Number, default: null },
     EWS: { type: Number, default: null },
     General: { type: Number, default: null }
-});
+},{_id: false});
 
 const cutOffSchema = new mongoose.Schema({
     year: {

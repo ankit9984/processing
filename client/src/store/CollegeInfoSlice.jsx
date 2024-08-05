@@ -112,7 +112,7 @@ export const fetchCollegeCutoffbyCollegeId = createAsyncThunk(
     async(collegeId, {rejectWithValue}) => {
         try {
             const response = await axiosInstance.get(`/colleges/getcutoffbycollegeid/${collegeId}`);
-            console.log('CutOff', response.data);
+            // console.log('CutOff', response.data);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data)
@@ -120,7 +120,18 @@ export const fetchCollegeCutoffbyCollegeId = createAsyncThunk(
     }
 )
 
-
+export const fetchFullCutOffInfoByStreamId = createAsyncThunk(
+    'cutOffIno/fetchFullCutOffInfoByStreamId', 
+    async (streamid, {rejectWithValue}) => {
+        try {
+            const response = await axiosInstance.get(`/colleges/getcutoffbystreamid/${streamid}`);
+            console.log(response.data);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data || 'Failed to fetch CutOff details')
+        }
+    }
+)
 
 const collegeInfoSlice = createSlice({
     name: 'collegeInfo',
@@ -132,6 +143,8 @@ const collegeInfoSlice = createSlice({
         seatsDetails: [],
         seatsFullInfo: [],
         cutOffInfo: null,
+        cutOffFullInfo: null,
+        loadingFullCuttOff: false,
         loadingCutOff: false,
         loadingSeatsFullInfo:false,
         loadingSeats: false,
@@ -237,6 +250,18 @@ const collegeInfoSlice = createSlice({
             .addCase(fetchCollegeCutoffbyCollegeId.rejected, (state, action) => {
                 state.loadingCutOff = false,
                 state.error = action.payload?.message || 'Failed to fetch cutoff'
+            })
+            .addCase(fetchFullCutOffInfoByStreamId.pending, (state) => {
+                state.loadingFullCuttOff = true,
+                state.error = null
+            })
+            .addCase(fetchFullCutOffInfoByStreamId.fulfilled, (state, action) => {
+                state.loadingFullCuttOff = false,
+                state.cutOffFullInfo = action.payload.stream
+            })
+            .addCase(fetchFullCutOffInfoByStreamId.rejected, (state, action) => {
+                state.loadingFullCuttOff = false,
+                state.error = action.payload?.message || 'Failed to fetch CutOff full Information'
             })
     }
 });

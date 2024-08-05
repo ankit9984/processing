@@ -199,41 +199,46 @@ const getCutOff = async (req, res) => {
 //     }
 // };
 
-const getCutOffBasedOnCollegeId = async(req, res) => {
-    const {collegeId} = req.params;
+const getCutOffBasedOnCollegeId = async (req, res) => {
+    const { collegeId } = req.params;
 
     try {
         const college = await College.findById(collegeId);
-        if(!college){
-            return res.status(404).json({error: 'College not found'})
-        };
+        if (!college) {
+            return res.status(404).json({ error: 'College not found' });
+        }
 
-        const streams = await CollegeStream.find({_id: {$in: college.streams}})
-        
+        const streams = await CollegeStream.find({ _id: { $in: college.streams } });
+
         const streamsWithCutoffs = await Promise.all(streams.map(async (stream) => {
             const cutoff = await CutOff.findById(stream.cutOff);
-            // console.log(cutoff);
+            if (!cutoff) {
+                return {
+                    _id: stream._id,
+                    streamName: stream.streamName,
+                    streamCode: stream.streamCode,
+                    status: stream.status,
+                    year: null,
+                    cutOffs: []
+                };
+            }
+
             const filteredCutoffs = cutoff.cutOffs
                 .filter(c => c.category === 'Pure')
                 .map(c => ({
                     category: c.category,
-                    data: {General: c.data.General}
+                    data: { General: c.data.General }
                 }));
-            
+
             return {
                 _id: stream._id,
                 streamName: stream.streamName,
                 streamCode: stream.streamCode,
                 status: stream.status,
-                // cutOff: {
-                    year: cutoff.year,
-                    cutOffs: filteredCutoffs
-                // }
-            }
+                year: cutoff.year,
+                cutOffs: filteredCutoffs
+            };
         }));
-
-        console.log(streamsWithCutoffs);
-        
 
         const response = {
             _id: college._id,
@@ -241,9 +246,9 @@ const getCutOffBasedOnCollegeId = async(req, res) => {
         };
 
         // Step 6: Send the successful response
-        res.status(200).json({ 
-            message: 'Cutoff retrieved successfully', 
-            college: response 
+        res.status(200).json({
+            message: 'Cutoff retrieved successfully',
+            college: response
         });
 
     } catch (error) {
@@ -253,11 +258,77 @@ const getCutOffBasedOnCollegeId = async(req, res) => {
 }
 
 
+const getCutOffDetailsByStreamId = async (req, res) => {
+    try {
+        const { streamId } = req.params;
+
+        const stream = await CollegeStream.findById(streamId)
+            .select('streamName streamCode status medium intake cutOff')
+            .populate({
+                path: 'cutOff',
+                select: '-optionalSubject -bifocalSubject -reservationSeats'
+            })
+            .lean(); // Convert Mongoose documents to plain JavaScript objects
+
+        if (!stream) {
+            return res.status(200).json({ message: 'No cutOff data available' });
+        };
+
+
+        if (stream.cutOff.length === 0) {
+            return res.status(200).json({ message: 'No cutOff data available', stream })
+        };
+
+        console.log(stream);
+        
+
+        stream.cutOff.sort((a, b) => b.year - a.year);
+        
+
+        // Filter to get the first round of the latest year
+        const selectRound = stream.cutOff.find(item => item.roundNumber === 1);
+
+        // let me = null;
+        // for(let i=0; i<stream.cutOff.length; i++){
+        //     if(stream.cutOff[i].roundNumber === 1){
+        //         me = stream.cutOff[i];
+        //         break;
+        //     }
+        // }
+
+        const veritualStream = {
+            streamName: stream.streamName,
+            streamCode: stream.streamCode,
+            streamStatus: stream.status,
+            streamMedium: stream.medium,
+            streamIntake: stream.intake,
+            fullCutOffs: {
+                year: selectRound.year,
+                roundNumber: selectRound.roundNumber,
+                cutOffs: selectRound.cutOffs.map(cutOff => ({
+                    category: cutOff.category,
+                    data: Object.keys(cutOff.data).reduce((acc, key) => {
+                        if (key !== '_id') {
+                            acc[key] = cutOff.data[key];
+                        }
+                        return acc;
+                    }, {})
+                }))
+            }
+        };
+
+        res.status(200).json({ message: 'CutOff retrieve successfully', stream: veritualStream })
+    } catch (error) {
+        console.error('getCutOffDetailsByStreamId controller', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
 
 
 export {
     registerCutOff,
     updateCutOff,
     getCutOff,
-    getCutOffBasedOnCollegeId
+    getCutOffBasedOnCollegeId,
+    getCutOffDetailsByStreamId
 }

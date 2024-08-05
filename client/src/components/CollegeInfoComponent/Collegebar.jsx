@@ -32,6 +32,7 @@ function Collegebar({setCurrentSection}) {
         break;
       case 'CutOff':
         dispatch(fetchCollegeCutoffbyCollegeId(id));
+        // alert(id)
         setCurrentSection(location)
         break;
       default:
