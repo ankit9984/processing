@@ -44,6 +44,10 @@ const registerCollegeAddress = async (req, res) => {
         res.status(200).json({message: 'College address added successfully', newCollegeAddress})
     } catch (error) {
         console.error('registerCollegeAddress controller', error);
+        if (error.name === 'ValidationError') {
+            const errors = Object.values(error.errors).map(err => err.message);
+            return res.status(400).json({ message: 'Validation error', errors });
+        }
         res.status(500).json({message: 'Server error'})
     }
 };
