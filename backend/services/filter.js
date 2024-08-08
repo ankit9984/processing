@@ -30,9 +30,9 @@ const filterColleges = async (req, res) => {
             // },
             {
                 $lookup: {
-                    from: 'collegeaddresses', // Collection name for Address model
-                    localField: 'address', // Field in the College collection
-                    foreignField: '_id', // Field in the Address collection
+                    from: 'collegeaddresses', 
+                    localField: 'address', 
+                    foreignField: '_id', 
                     as: 'fullAddress'
                 }
             },
@@ -54,17 +54,26 @@ const filterColleges = async (req, res) => {
                     ...(minority ? { 'streams.minority': minority } : {})
                 }
             },
+            // {
+            //     $project: {
+            //         jrCollegeName: 1,
+            //         udiseNumber: 1,
+            //         collegeType: 1,
+            //         'fullAddress.area': 1,
+            //         'fullAddress.pinCode': 1
+            //     }
+            // },
             {
                 $group: {
                     _id: null, // Group by region
                     totalColleges: { $sum: 1 }, // Count number of colleges per region
                     colleges: {
                         $push: {
-                            jrCollegeName: '$jrCollegeName',
+                            collegeName: '$jrCollegeName',
                             UDISENO: '$udiseNumber',
                             collegeType: '$collegeType',
-                            address: '$fullAddress.address', // Include full address details
-                            // streams: '$streams'
+                            area: '$fullAddress.area',
+                            pinCode: '$fullAddress.pinCode' 
                         }
                     }
                 }
@@ -83,7 +92,7 @@ const filterColleges = async (req, res) => {
         const colleges = await College.aggregate(pipeline);
 
         // Return the results
-        res.status(200).json(colleges);
+        res.status(200).json({message: 'Colleges filter successfully', colleges});
     } catch (error) {
         console.error('filterColleges controller', error);
         res.status(500).json({ message: 'Server error' });

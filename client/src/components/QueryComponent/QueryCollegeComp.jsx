@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { IoIosArrowDown } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
-import { setSelectedFilter, setShowQuery } from '../../store/UiCollegeQuerySlice';
+import { setSelectedFilter, setShowQuery } from '../../store/CollegeQuerySlice';
+// import { setSelectedFilter, setShowQuery } from '../../store/UiCollegeQuerySlice';
 
 function QueryCollegeComp() {
     const dispatch = useDispatch();
-    const selectedFilter = useSelector((state) => state.uiCollQuery.selectedFilter);
+    // const selectedFilter = useSelector((state) => state.uiCollQuery.selectedFilter);
+    const selectedFilter = useSelector((state) => state.collegeQuery.selectedFilter);
     
     
     const details = [
@@ -14,7 +16,7 @@ function QueryCollegeComp() {
         { Name: 'Zone', icon: <IoIosArrowDown />, location: 'Zone' },
         { Name: 'Area', icon: <IoIosArrowDown />, location: 'Area' },
         { Name: 'Stream', icon: <IoIosArrowDown />, location: 'Stream' },
-        { Name: 'Stream Status', icon: <IoIosArrowDown />, location: 'Status' },
+        { Name: 'Stream Status', icon: <IoIosArrowDown />, location: 'status' },
         { Name: 'College Type', icon: <IoIosArrowDown />, location: 'CollegeType' },
         { Name: 'Medium', icon: <IoIosArrowDown />, location: 'Medium' },
     ];

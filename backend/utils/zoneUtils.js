@@ -100,7 +100,7 @@ const getCitiesByZone = (req, res) => {
   const cities = getCities(region, zone);
 
   if (cities.length > 0) {
-    res.status(200).json(cities)
+    res.status(200).json({message: 'Citie retrieve successfully', allArea: cities})
   } else {
     res.status(404).json({ message: 'No cites for the selected region and zone' })
   }
