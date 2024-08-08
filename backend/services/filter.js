@@ -88,6 +88,9 @@ const filterColleges = async (req, res) => {
             }
         ];
 
+        console.log(pipeline);
+        
+
         // Execute the aggregation query
         const colleges = await College.aggregate(pipeline);
 

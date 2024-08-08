@@ -16,7 +16,7 @@ function QueryCollegeComp() {
         { Name: 'Zone', icon: <IoIosArrowDown />, location: 'Zone' },
         { Name: 'Area', icon: <IoIosArrowDown />, location: 'Area' },
         { Name: 'Stream', icon: <IoIosArrowDown />, location: 'Stream' },
-        { Name: 'Stream Status', icon: <IoIosArrowDown />, location: 'status' },
+        { Name: 'Stream Status', icon: <IoIosArrowDown />, location: 'Status' },
         { Name: 'College Type', icon: <IoIosArrowDown />, location: 'CollegeType' },
         { Name: 'Medium', icon: <IoIosArrowDown />, location: 'Medium' },
     ];

@@ -23,7 +23,7 @@ function QueryData() {
   };
 
   const handleClickArea = (area) => {
-    dispatch(addToTrack({type: 'Area', value: area}))
+    dispatch(addToTrack({type: 'area', value: area}))
   }
 
   const handleClickStream = (stream) => {
@@ -31,11 +31,11 @@ function QueryData() {
   };
 
   const handleClickStatus = (status) => {
-    dispatch(addToTrack({type: 'Status', value: status}))
+    dispatch(addToTrack({type: 'status', value: status}))
   };
   
   const handleClickCollegeType = (type) => {
-    dispatch(addToTrack({type: 'Type', value: type}))
+    dispatch(addToTrack({type: 'collegeType', value: type}))
   };
 
   const handleClickMedium = (medium) => {
@@ -57,10 +57,12 @@ function QueryData() {
     const region = track.find(item => item.type === 'region')?.value;
     const zone = track.find(item => item.type === 'zone')?.value;
     const area = track.find(item => item.type === 'area')?.value;
-    const collegeType = track.find(item => item.type === 'CollegeType')?.value;
+    const collegeType = track.find(item => item.type === 'collegeType')?.value;
     const streamName = track.find(item => item.type === 'Stream')?.value;
-    const status = track.find(item => item.type === 'Status')?.value;
+    const status = track.find(item => item.type === 'status')?.value;
     const medium = track.find(item => item.type === 'Medium')?.value;
+    
+    
     
   
     const filters = {
@@ -72,6 +74,9 @@ function QueryData() {
       status,
       medium,
     };
+
+    console.log(filters);
+    
   
     dispatch(filterColleges(filters));
 
