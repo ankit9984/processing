@@ -21,8 +21,8 @@ export const fetchCitiesByZoneAndRegion = createAsyncThunk(
     async ({region, zone}, {rejectWithValue}) => {
         try {
             const response = await axiosInstance.get(`/search/get-by-zone?region=${region}&zone=${zone}`);
-            console.log('hey');
-            console.log(response.data);
+            // console.log('hey');
+            // console.log(response.data);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -33,11 +33,10 @@ export const fetchCitiesByZoneAndRegion = createAsyncThunk(
 export const filterColleges = createAsyncThunk(
     'collegeQuery/filterColleges',
     async(filters, {rejectWithValue}) => {
-        console.log(filters);
-        
+        // console.log(filters);
         try {
             const response = await axiosInstance.get('/search/colleges/filter', {params: filters});
-            console.log(response.data);
+            // console.log(response.data);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -78,7 +77,17 @@ const querySlice = createSlice({
             }
         },
         removeFromTrack: (state, action) => {
-            state.track = state.track.filter(item => item.value !== action.payload);
+            const { value, type } = action.payload;
+            if (type === 'region') {
+                state.track = state.track.filter(item => item.type !== 'region' && item.type !== 'zone' && item.type !== 'area');
+                state.zones = [];
+                state.area = [];
+            } else if (type === 'zone') {
+                state.track = state.track.filter(item => item.type !== 'zone' && item.type !== 'area');
+                state.area = [];
+            } else {
+                state.track = state.track.filter(item => item.value !== value);
+            }
         },
         clearTrack: (state) => {
             state.track = [];

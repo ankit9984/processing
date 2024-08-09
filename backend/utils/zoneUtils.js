@@ -1,30 +1,29 @@
 export const zoneCityMapping = {
   "Mumbai": {
-    "Zone1": [
-      "South Mumbai", "Colaba", "Fort", "Churchgate", "Marine Drive",
-      "Breach Candy", "Worli", "Prabhadevi", "Dadar", "Matunga"
+    "Mumbai Mahanagar Area - Mumbai South": [
+       "Churchgate", "Marine Drive",
+       "Dadar", 
     ],
-    "Zone2": [
-      "Bandra", "Khar", "Santacruz", "Vile Parle", "Juhu",
+    "Mumbai Mahanagar Area - Mumbai West": [
+      "Bandra", "Khar", "Santacruz", "Vile Parle", "Juhu", "Kandivali (W)",
       "Andheri", "Jogeshwari", "Malad", "Kandivali", "Borivali"
     ],
-    "Zone3": [
+    "Ulhasnagar Mahanagar Palika (UMC), Ambernath & Badlapur Nagar Palika Area": [
       "Ghatkopar", "Kurla", "Bhandup", "Powai", "Vikhroli",
-      "Kanjurmarg", "Mulund", "Thane", "Dahisar", "Oshiwara"
+      "Kanjurmarg", "Mulund", "Thane", "Dahisar", "Oshiwara", "Ulhasnagar (W)-Khemani"
     ],
-    "Zone4": [
-      "Mira Road", "Bhayandar", "Nalasopara", "Vasai", "Virar",
+    "Virar-Nalasopara": [
+      "Mira Road", "Bhayandar", "Nalasopara (E)", "Vasai", "Virar",
       "Dombivli", "Kalyan", "Ambarnath", "Ulhasnagar", "Badlapur"
     ]
   },
   "Pune": {
-    "Central": [
-      "Shivaji Nagar", "Deccan", "FC Road", "JM Road", "Camp",
-      "Koregaon Park", "Kalyani Nagar", "Bund Garden", "Swargate"
+    "Pune City Central": [
+       "TILAK ROAD", 
     ],
-    "North": [
-      "Pimple Saudagar", "Aundh", "Baner", "Balewadi", "Wakad",
-      "Pimple Nilakh", "Pimple Gurav", "Hinjewadi", "Ravet"
+    "Chinchwad-Akurdi-Nigdi": [
+       "WAKAD", "CHINCHWAD",
+      
     ],
     "East": [
       "Viman Nagar", "Kharadi", "Mundhwa", "Keshav Nagar", "Hadapsar",

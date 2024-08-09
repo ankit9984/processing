@@ -75,7 +75,7 @@ function QueryData() {
       medium,
     };
 
-    console.log(filters);
+    // console.log(filters);
     
   
     dispatch(filterColleges(filters));
@@ -88,6 +88,8 @@ function QueryData() {
     }
     dispatch(setShowQuery(false));
   };
+
+ 
 
   if (loadingZone) return <div>Loading...</div>;
   if(loadingArea) return <div>Loading area...</div>

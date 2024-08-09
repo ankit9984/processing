@@ -1,9 +1,9 @@
 import React from 'react';
-import QueryCollegeComp from '../../components/QueryComponent/QueryCollegeComp';
 import { useDispatch, useSelector } from 'react-redux';
-import QueryData from '../../components/QueryComponent/QueryData';
 import { IoMdClose } from "react-icons/io";
 import { clearTrack, filterColleges, removeFromTrack } from '../../store/CollegeQuerySlice';
+import QueryCollegeComp from '../../components/QueryComponent/QueryCollegeComp';
+import QueryData from '../../components/QueryComponent/QueryData';
 import QueryCollegeInfo from '../../components/QueryComponent/QueryCollegeInfo';
 
 function QueryPage() {
@@ -14,7 +14,7 @@ function QueryPage() {
   const getFilterCriteria = (track) => {
     const criteria = {};
     track.forEach(item => {
-      criteria[item.value] = item.value;
+      criteria[item.type] = item.value;
     });
     return criteria;
   }
@@ -23,9 +23,17 @@ function QueryPage() {
     dispatch(clearTrack());
   };
 
-  const handleRemoveItem = (value) => {
-    dispatch(removeFromTrack(value));
-    const updatedTrack = track.filter(item => item.value !== value);
+  const handleRemoveItem = (value, type) => {
+    dispatch(removeFromTrack({ value, type }));
+    const updatedTrack = track.filter(item => {
+      if (type === 'region') {
+        return item.type !== 'region' && item.type !== 'zone' && item.type !== 'area';
+      } else if (type === 'zone') {
+        return item.type !== 'zone' && item.type !== 'area';
+      } else {
+        return item.value !== value;
+      }
+    });
     const filterCriteria = getFilterCriteria(updatedTrack);
     dispatch(filterColleges(filterCriteria));
   };
@@ -39,7 +47,7 @@ function QueryPage() {
           track.map((item, index) => (
             <div key={index} className='flex items-center gap-5 px-4 py-2 rounded'>
               <span className='bg-gray-100'>{item.value}</span>
-              <span onClick={() => handleRemoveItem(item.value)}><IoMdClose /></span>
+              <span onClick={() => handleRemoveItem(item.value, item.type)}><IoMdClose /></span>
             </div>
           ))
         )}

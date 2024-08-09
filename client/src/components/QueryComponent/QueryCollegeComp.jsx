@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { IoIosArrowDown } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedFilter, setShowQuery } from '../../store/CollegeQuerySlice';
-// import { setSelectedFilter, setShowQuery } from '../../store/UiCollegeQuerySlice';
 
 function QueryCollegeComp() {
     const dispatch = useDispatch();
-    // const selectedFilter = useSelector((state) => state.uiCollQuery.selectedFilter);
     const selectedFilter = useSelector((state) => state.collegeQuery.selectedFilter);
-    
+    const track = useSelector((state) => state.collegeQuery.track);
     
     const details = [
         { Name: 'All Filter', icon: <IoIosArrowDown />, location: 'All' },
@@ -25,17 +23,28 @@ function QueryCollegeComp() {
         if(item === selectedFilter){
             dispatch(setShowQuery(true));
             dispatch(setSelectedFilter(item));
-            // alert(item)
-        }else {
+        } else {
             dispatch(setShowQuery(false));
             dispatch(setSelectedFilter(item));
         }
+    }
+
+    const isFilterActive = (location) => {
+        return track.some(item => item.type.toLowerCase() === location.toLowerCase());
+    };
+    
+    const getBackgroundColor = (location) => {
+        return isFilterActive(location) ? 'bg-green-200' : 'bg-gray-100';
     }
    
     return (
         <div className="flex space-x-4 p-4 bg-white shadow overflow-x-auto">
             {details.map((item, index) => (
-                <div key={index} onClick={() => handleClick(item.location)} className="flex items-center px-4 py-2 border text-nowrap rounded-full bg-gray-100 cursor-pointer hover:bg-gray-200">
+                <div 
+                    key={index} 
+                    onClick={() => handleClick(item.location)} 
+                    className={`flex items-center px-4 py-2 border text-nowrap rounded-full ${getBackgroundColor(item.location)} cursor-pointer hover:bg-gray-200`}
+                >
                     <span className="text-sm">{item.Name}</span>
                     <span className="ml-2"><IoIosArrowDown /></span>
                 </div>
